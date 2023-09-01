@@ -1,0 +1,115 @@
+<?php
+
+namespace DummyNamespace;
+
+use App\Exceptions\Auth\UnauthorizedException;
+use DummyModelPath;
+use App\Traits\Essentials\VerifyTypeUserTrait;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+
+class DummyClass
+{
+    use VerifyUserPrivilegeTrait;
+
+    protected array $relations = [
+
+    ];
+
+    /**
+     * Get all data from the database
+     *
+     * @throws UnauthorizedException
+     */
+    public function getAll(): array|Collection
+    {
+        if (!$this->verifyAdmin()) return throw new UnauthorizedException();
+        return DummyModelClass::withTrashed()->with($this->relations)->get();
+    }
+
+    /**
+     * Create a new data in the database
+     *
+     * @throws UnauthorizedException
+     */
+    public function create(array $attributes) {
+        if (!$this->verifyAdmin()) return throw new UnauthorizedException();
+        $DummyInScopeVariable = DummyModelClass::create($attributes);
+
+        return $DummyInScopeVariable->load($this->relations);
+    }
+
+    /**
+     * Get a data from the database by id
+     *
+     * @param int $id
+     * @return Model|array|Collection|Builder|null
+     * @throws UnauthorizedException
+     */
+    public function getById(int $id): Model|array|Collection|Builder|null
+    {
+        if (!$this->verifyAdmin()) return throw new UnauthorizedException();
+        return DummyModelClass::withTrashed()->with($this->relations)->findOrFail($id);
+    }
+
+    /**
+     * Update a specific data in the database
+     *
+     * @param array $attributes
+     * @param int $id
+     * @return Collection|Model
+     * @throws UnauthorizedException
+     */
+    public function update(array $attributes, int $id): Model|Collection
+    {
+        if (!$this->verifyAdmin()) return throw new UnauthorizedException();
+
+        $DummyInScopeVariable = $this->getById($id);
+        $DummyInScopeVariable->update($attributes);
+        return $DummyInScopeVariable->load($this->relations);
+    }
+
+    /**
+     * Trash a specified data in the database
+     *
+     * @param int $id
+     * @return mixed
+     * @throws UnauthorizedException
+     */
+    public function delete(int $id): mixed
+    {
+        if (!$this->verifyAdmin()) return throw new UnauthorizedException();
+        $DummyInScopeVariable = $this->getById($id);
+        return $DummyInScopeVariable->delete();
+    }
+
+    /**
+     * Permanently delete a specific data in the database
+     *
+     * @param int $id
+     * @return bool|null
+     * @throws UnauthorizedException
+     */
+    public function forceDelete(int $id): ?bool
+    {
+        if (!$this->verifyAdmin()) return throw new UnauthorizedException();
+        $DummyInScopeVariable = $this->getById($id);
+        return $DummyInScopeVariable->forceDelete();
+    }
+
+    /**
+     * Restore a specific data in the database
+     *
+     * @param int $id
+     * @return bool|null
+     * @throws UnauthorizedException
+     */
+    public function restore(int $id): ?bool
+    {
+        if (!$this->verifyAdmin()) return throw new UnauthorizedException();
+
+        $DummyInScopeVariable = $this->getById($id);
+        return $DummyInScopeVariable->restore();
+    }
+}

@@ -1,0 +1,106 @@
+<?php
+
+namespace DummyNamespace;
+
+use App\Exceptions\Auth\UnauthorizedException;
+use App\Http\Controllers\Controller;
+use DummyRequestPath;
+use DummyResourcePath;
+use DummyServicePath;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+
+class DummyClass extends Controller
+{
+
+    public function __construct(
+        public DummyServiceClass $DummyInstanceServiceClass
+    ){}
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return AnonymousResourceCollection
+     * @throws UnauthorizedException
+     */
+    public function index(): AnonymousResourceCollection
+    {
+        return DummyResourceClass::collection($this->DummyInstanceServiceClass->getAll());
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param DummyRequestClass $DummyInstanceRequestClass
+     * @return DummyResourceClass
+     * @throws UnauthorizedException
+     */
+    public function store(DummyRequestClass $DummyInstanceRequestClass): DummyResourceClass
+    {
+        $DummyInstanceRequestClass->validated($DummyInstanceRequestClass->all());
+        $DummyInScopeVariable = $this->DummyInstanceServiceClass->create($DummyInstanceRequestClass->all());
+        return new DummyResourceClass($DummyInScopeVariable);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param int $id
+     * @return DummyResourceClass
+     * @throws UnauthorizedException
+     */
+    public function show(int $id): DummyResourceClass
+    {
+        $DummyInScopeVariable = $this->DummyInstanceServiceClass->getById($id);
+        return new DummyResourceClass($DummyInScopeVariable);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param DummyRequestClass $DummyInstanceRequestClass
+     * @param int $id
+     * @return DummyResourceClass
+     * @throws UnauthorizedException
+     */
+    public function update(DummyRequestClass $DummyInstanceRequestClass, int $id): DummyResourceClass
+    {
+        $DummyInstanceRequestClass->validated($DummyInstanceRequestClass->all());
+        $DummyInScopeVariable = $this->DummyInstanceServiceClass->getById($id);
+        return new DummyResourceClass($DummyInScopeVariable);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param int $id
+     * @return mixed
+     * @throws UnauthorizedException
+     */
+    public function destroy(int $id): mixed
+    {
+        return $this->DummyInstanceServiceClass->delete($id);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param int $id
+     * @return mixed
+     * @throws UnauthorizedException
+     */
+    public function forceDelete(int $id): mixed
+    {
+        return $this->DummyInstanceServiceClass->forceDelete($id);
+    }
+    /**
+     * Restore the specified resource from storage.
+     *
+     * @param int $id
+     * @return mixed
+     * @throws UnauthorizedException
+     */
+    public function restore(int $id): mixed
+    {
+        return $this->DummyInstanceServiceClass->restore($id);
+    }
+}

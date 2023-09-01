@@ -1,0 +1,28 @@
+{
+    "name": "illumify/builder",
+    "description": "Laravel artisan extra commands",
+    "type": "library",
+    "require": {
+        "illuminate/console": "^10.21",
+        "illuminate/support": "^10.21",
+        "laravel/helpers": "^1.6"
+    },
+    "scripts": {
+        "post-install-cmd": [
+
+        ]
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Illumify\\Builder\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Patrício Andrade",
+            "email": "tricioandrade@outlook.com"
+        }
+    ],
+    "minimum-stability": "stable"
+}
