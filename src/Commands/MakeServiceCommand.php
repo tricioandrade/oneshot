@@ -10,7 +10,7 @@
  */
 
 
-namespace Illudir\Builder\Commands;
+namespace Enlighten\Builder\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
