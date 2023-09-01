@@ -1,5 +1,5 @@
 {
-    "name": "nutella/commands",
+    "name": "tricioandrade/oneshot",
     "description": "Laravel artisan extra commands",
     "type": "library",
     "require": {
