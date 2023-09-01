@@ -2,6 +2,7 @@
 
 namespace OneShot\Builder;
 
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Filesystem\Filesystem;
 
@@ -26,25 +27,16 @@ class OneShotServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $sourceDirectory = __DIR__ . '/src/stubs';
-        $destinationDirectory = resource_path();
+        if (!File::exists(resource_path('stubs'))):
+            $api = File::get(__DIR__.'stubs/create.api-controller.stub');
+            $enum = File::get(__DIR__.'stubs/create.enum.stub');
+            $trait = File::get(__DIR__.'stubs/create.trait.stub');
+            $service = File::get(__DIR__.'stubs/create.service.stub');
 
-        $this->copyDirectory($sourceDirectory, $destinationDirectory);
-    }
-
-    /**
-    * Copy a directory and his content .
-    *
-    * @param string $source
-    * @param string $destination
-    * @return void
-    */
-    protected function copyDirectory($source, $destination)
-    {
-        $filesystem = new Filesystem();
-
-        if ($filesystem->isDirectory($source)) {
-            $filesystem->copyDirectory($source, $destination);
-        }
+            File::put(resource_path('stubs').'create.api-controller.stub', $api);
+            File::put(resource_path('stubs').'create.enum.stub', $enum);
+            File::put(resource_path('stubs').'create.trait.stub', $trait);
+            File::put(resource_path('stubs').'create.service.stub', $service);
+        endif;
     }
 }
