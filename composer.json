@@ -18,7 +18,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Enlighten\\Builder\\EnlightenServiceProvider"
+                "OneShot\\Builder\\OneShotServiceProvider"
             ]
         }
     },
