@@ -1,5 +1,5 @@
 {
-    "name": "command/shot",
+    "name": "nutella/commands",
     "description": "Laravel artisan extra commands",
     "type": "library",
     "require": {
