@@ -6,7 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Filesystem\Filesystem;
 
 
-class EnlightenServiceProvider extends ServiceProvider
+class OneShotServiceProvider extends ServiceProvider
 {
 
     /**
