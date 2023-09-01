@@ -9,7 +9,7 @@
  * @link https://linkedin.com/tricioandrade
  */
 
-namespace Enlighten\Builder\Commands;
+namespace OneShot\Builder\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;

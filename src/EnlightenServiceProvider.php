@@ -1,6 +1,6 @@
 <?php
 
-namespace Enlighten\Builder;
+namespace OneShot\Builder;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Filesystem\Filesystem;
@@ -15,10 +15,10 @@ class EnlightenServiceProvider extends ServiceProvider
     public function register()
     {
         $this->commands([
-            \Enlighten\Builder\Commands\MakeApiControllerCommand::class,
-            \Enlighten\Builder\Commands\MakeEnumCommand::class,
-            \Enlighten\Builder\Commands\MakeServiceCommand::class,
-            \Enlighten\Builder\Commands\MakeTraitCommand::class
+            \OneShot\Builder\Commands\MakeApiControllerCommand::class,
+            \OneShot\Builder\Commands\MakeEnumCommand::class,
+            \OneShot\Builder\Commands\MakeServiceCommand::class,
+            \OneShot\Builder\Commands\MakeTraitCommand::class
         ]);
     }
 

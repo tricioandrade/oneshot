@@ -1,5 +1,5 @@
 {
-    "name": "enlighten/builder",
+    "name": "one/shot",
     "description": "Laravel artisan extra commands",
     "type": "library",
     "require": {
@@ -10,8 +10,8 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Enlighten\\Builder\\": "src/",
-            "Enlighten\\Builder\\Commands\\": "src/commands"
+            "OneShot\\Builder\\": "src/",
+            "OneShot\\Builder\\Commands\\": "src/commands"
         }
     },
     "extra": {
