@@ -1,5 +1,5 @@
 {
-    "name": "illumify/builder",
+    "name": "enlighten/builder",
     "description": "Laravel artisan extra commands",
     "type": "library",
     "require": {
@@ -7,15 +7,18 @@
         "illuminate/support": "^10.21",
         "laravel/helpers": "^1.6"
     },
-    "scripts": {
-        "post-install-cmd": [
-
-        ]
-    },
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Illumify\\Builder\\": "src/"
+            "Enlighten\\Builder\\": "src/",
+            "Enlighten\\Builder\\Commands\\": "src/commands"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Enlighten\\Builder\\EnlightenServiceProvider"
+            ]
         }
     },
     "authors": [
