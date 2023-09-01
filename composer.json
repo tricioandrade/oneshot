@@ -1,5 +1,5 @@
 {
-    "name": "single/shot",
+    "name": "command/shot",
     "description": "Laravel artisan extra commands",
     "type": "library",
     "require": {
