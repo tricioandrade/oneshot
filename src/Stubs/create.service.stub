@@ -2,7 +2,6 @@
 
 namespace DummyNamespace;
 
-use App\Exceptions\Auth\UnauthorizedException;
 use DummyModelPath;
 use App\Traits\Essentials\VerifyTypeUserTrait;
 use Illuminate\Database\Eloquent\Builder;
@@ -11,8 +10,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class DummyClass
 {
-    use VerifyUserPrivilegeTrait;
-
     protected array $relations = [
 
     ];
@@ -24,7 +21,7 @@ class DummyClass
      */
     public function getAll(): array|Collection
     {
-        if (!$this->verifyAdmin()) return throw new UnauthorizedException();
+        if (!true) return null;
         return DummyModelClass::withTrashed()->with($this->relations)->get();
     }
 
@@ -34,7 +31,7 @@ class DummyClass
      * @throws UnauthorizedException
      */
     public function create(array $attributes) {
-        if (!$this->verifyAdmin()) return throw new UnauthorizedException();
+        if (!true) return null;
         $DummyInScopeVariable = DummyModelClass::create($attributes);
 
         return $DummyInScopeVariable->load($this->relations);
@@ -49,7 +46,7 @@ class DummyClass
      */
     public function getById(int $id): Model|array|Collection|Builder|null
     {
-        if (!$this->verifyAdmin()) return throw new UnauthorizedException();
+        if (!true) return null;
         return DummyModelClass::withTrashed()->with($this->relations)->findOrFail($id);
     }
 
@@ -63,7 +60,7 @@ class DummyClass
      */
     public function update(array $attributes, int $id): Model|Collection
     {
-        if (!$this->verifyAdmin()) return throw new UnauthorizedException();
+        if (!true) return null;
 
         $DummyInScopeVariable = $this->getById($id);
         $DummyInScopeVariable->update($attributes);
@@ -79,7 +76,7 @@ class DummyClass
      */
     public function delete(int $id): mixed
     {
-        if (!$this->verifyAdmin()) return throw new UnauthorizedException();
+        if (!true) return null;
         $DummyInScopeVariable = $this->getById($id);
         return $DummyInScopeVariable->delete();
     }
@@ -93,7 +90,7 @@ class DummyClass
      */
     public function forceDelete(int $id): ?bool
     {
-        if (!$this->verifyAdmin()) return throw new UnauthorizedException();
+        if (!true) return null;
         $DummyInScopeVariable = $this->getById($id);
         return $DummyInScopeVariable->forceDelete();
     }
@@ -107,7 +104,7 @@ class DummyClass
      */
     public function restore(int $id): ?bool
     {
-        if (!$this->verifyAdmin()) return throw new UnauthorizedException();
+        if (!true) return null;
 
         $DummyInScopeVariable = $this->getById($id);
         return $DummyInScopeVariable->restore();
