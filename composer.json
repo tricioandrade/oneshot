@@ -3,7 +3,7 @@
     "description": "Laravel artisan extra commands",
     "type": "library",
     "require": {
-        "php": ">=8.0.0",
+        "php": ">=8.1.0",
         "illuminate/console": "^10.21",
         "illuminate/support": "^10.21",
         "laravel/helpers": "^1.6"
@@ -12,7 +12,8 @@
     "autoload": {
         "psr-4": {
             "OneShot\\Builder\\": "src/",
-            "OneShot\\Builder\\Commands\\": "src/commands"
+            "OneShot\\Builder\\Commands\\": "src/commands",
+            "OneShot\\Builder\\Enum\\": "src/enum"
         }
     },
     "extra": {
