@@ -36,50 +36,67 @@ class MakeApiControllerCommand extends Command
      */
     public function handle()
     {
-        $controllerName = $this->argument('name');
-        $controllerPath = app_path().'\\App\\Http\\Controllers';
-        $namespace      = 'App\\Http\\Controllers';
-        $serviceStub    = File::get(resource_path('stubs/create.api-controller.stub'));
+        $controllerName         = $this->argument('name');
 
-        $nameWithoutSuffix = $controllerName;
-        $baseFilesPath = str_replace('\\', "/", $nameWithoutSuffix);
+        $controllerNamespace    = 'App\\Http\\Controllers';
+        $controllerPath         = app_path().'\\'.'Http\\Controllers';
+        $controllerTemplateStub = File::get(resource_path('stubs/create.api-controller.stub'));
 
+        /**
+         * Remove the Controller Suffix if exists,
+         * otherwise keeps the original name
+         * Ex: MyLovelyController result in  MyLovely
+         */
+        $controllerNameWithoutSuffix = explode('/', str_replace('Controller', "", $controllerName));
+        $controllerNameWithoutSuffix = end($controllerNameWithoutSuffix);
+
+        /**
+         * Get controller path from given name.
+         */
+        $baseFilesPath = str_replace('/', "\\", $controllerNameWithoutSuffix);
+
+        /**
+         * Verify if controller name argument has Controller suffix like MyLovelyController
+         * if false append it.
+         */
+        if (!preg_match('/Controller$/', $controllerName)) $controllerName = $controllerName.'Controller';
+
+        /**
+         * Clear controller name if it has /
+         * and update current vars:
+         *
+         * @var $controllerName
+         * @var $controllerName
+         * @var $baseFilesPath
+         * @var $controllerPath
+         * @var $controllerNamesPace
+         *
+         */
         if (str_contains($controllerName, '/')) {
+            $argumentArrayResult    = explode('/', $controllerName);
+            $controllerName         = end($argumentArrayResult);
 
-            $array          = explode('/', $controllerName);
-            $controllerName = end($array);
-            $nameWithoutSuffix = $controllerName;
+            array_pop($argumentArrayResult);
 
-            if (!preg_match('/Controller$/', $controllerName)):
-                $controllerName = $controllerName.'Controller';
-            else:
-                $nameWithoutSuffix = str_replace('Controller', "", $controllerName);
-            endif;
-
-            array_pop($array);
-            $baseFilesPath  = implode('/', $array);
-            $controllerPath = app_path().'\\Http\\Controllers\\'. $baseFilesPath;
-            $namespace      = 'App\\Http\\Controllers\\'. implode('\\', $array);
-
-            if (!File::exists($controllerPath)) File::makeDirectory($controllerPath, 0755, true);
+            $controllerPath     = app_path().'\\Http\\Controllers\\'. $baseFilesPath;
+            $controllerNamespace = 'App\\Http\\Controllers\\'. implode('\\', $argumentArrayResult);
         }
 
+        if (!File::exists($controllerPath)) File::makeDirectory($controllerPath, 0755, true);
 
-        $DummyInScopeVariable       = lcfirst($nameWithoutSuffix);
+        $DummyInScopeVariable       = lcfirst($controllerNameWithoutSuffix);
+        $DummyInstanceServiceClass  = lcfirst($controllerNameWithoutSuffix) . 'Service';
+        $DummyInstanceRequestClass  = lcfirst($controllerNameWithoutSuffix) . 'Request';
 
-        $DummyInstanceServiceClass  = lcfirst($nameWithoutSuffix) . 'Service';
-        $DummyInstanceRequestClass  = lcfirst($nameWithoutSuffix) . 'Request';
+        $DummyResourceClass         = $controllerNameWithoutSuffix . 'Resource';
+        $DummyServiceClass          = $controllerNameWithoutSuffix . 'Service';
+        $DummyRequestClass          = $controllerNameWithoutSuffix . 'Request';
 
-        $DummyResourceClass         = $nameWithoutSuffix . 'Resource';
-        $DummyServiceClass          = $nameWithoutSuffix . 'Service';
-        $DummyRequestClass          = $nameWithoutSuffix . 'Request';
+        $DummyServiceClassPath      = 'App\\Services\\'. str_replace("/","\\",$baseFilesPath) . '\\'  . $controllerNameWithoutSuffix . 'Service';
+        $DummyRequestClassPath      = 'App\\Http\\Requests\\'. str_replace("/","\\",$baseFilesPath) . '\\'  .$controllerNameWithoutSuffix . 'Request' ;
+        $DummyResourceClassPath     = 'App\\Http\\Resources\\'. str_replace("/","\\",$baseFilesPath) . '\\'  .$controllerNameWithoutSuffix .'Resource';
 
-
-        $DummyServiceClassPath      = 'App\\Services\\'. str_replace("/","\\",$baseFilesPath) . '\\'  . $nameWithoutSuffix . 'Service';
-        $DummyRequestClassPath      = 'App\\Http\\Requests\\'. str_replace("/","\\",$baseFilesPath) . '\\'  .$nameWithoutSuffix . 'Request' ;
-        $DummyResourceClassPath     = 'App\\Http\\Resources\\'. str_replace("/","\\",$baseFilesPath) . '\\'  .$nameWithoutSuffix .'Resource';
-
-        $serviceStub = str_replace([
+        $controllerTemplateStub = str_replace([
             'DummyClass',
             'DummyNamespace',
             'DummyInScopeVariable',
@@ -93,7 +110,7 @@ class MakeApiControllerCommand extends Command
             'DummyResourcePath',
         ],  [
             $controllerName,
-            $namespace,
+            $controllerNamespace,
             $DummyInScopeVariable,
             $DummyInstanceServiceClass,
             $DummyInstanceRequestClass,
@@ -103,30 +120,39 @@ class MakeApiControllerCommand extends Command
             $DummyServiceClassPath,
             $DummyRequestClassPath,
             $DummyResourceClassPath,
-        ], $serviceStub);
+        ], $controllerTemplateStub);
 
         $filePath = $controllerPath. '\\' . $controllerName . '.php';
-        File::put($filePath, $serviceStub);
+        File::put($filePath, $controllerTemplateStub);
 
-        $this->newLine(1);
-        Artisan::call('make:resource',  ['name' => $baseFilesPath .'\\' .$nameWithoutSuffix . 'Resource']);
-        $this->line("\t<fg=white;bg=green>INFO</>\t <fg=white>API resource ${controllerName}Resource created successfully.</>");
-        $this->newLine(1);
+        /**
+         * Execute and print artisan tasks message.
+         */
 
-        Artisan::call('make:request',   ['name' => $baseFilesPath .'\\' .$nameWithoutSuffix . 'Request']);
-        $this->line("\t<fg=white;bg=green>INFO</>\t <fg=white>API request ${controllerName}Request created successfully.</>");
+        $this->newLine(); // break line.
+
+        // Create new resource
+        Artisan::call('make:resource', ['name' => $baseFilesPath .'\\' .$controllerNameWithoutSuffix . 'Resource']);
+        $this->line("\t<fg=white;bg=green>INFO</>\t <fg=white>API resource ${controllerNameWithoutSuffix}Resource created successfully.</>");
         $this->newLine();
 
-        Artisan::call('make:model',     ['name' => $baseFilesPath .'\\' .$nameWithoutSuffix . 'Model', '--migration' => true]);
-        $this->line("\t<fg=white;bg=green>INFO</>\t <fg=white>API model ${nameWithoutSuffix}Model created successfully.</>");
+        // Create new request
+        Artisan::call('make:request', [ 'name' => $baseFilesPath .'\\' .$controllerNameWithoutSuffix . 'Request']);
+        $this->line("\t<fg=white;bg=green>INFO</>\t <fg=white>API request ${controllerNameWithoutSuffix}Request created successfully.</>");
         $this->newLine();
 
-        Artisan::call('make:service ' . $baseFilesPath .'/' .$nameWithoutSuffix . 'Service');
-        $this->line("\t<fg=white;bg=green>INFO</>\t <fg=white>API service ${nameWithoutSuffix}Service created successfully.</>");
+        // Create Model and migration
+        Artisan::call('make:model', ['name'          => $baseFilesPath .'\\' .$controllerNameWithoutSuffix . 'Model', '--migration'   => true]);
+
+        $this->line("\t<fg=white;bg=green>INFO</>\t <fg=white>API model ${controllerNameWithoutSuffix}Model created successfully.</>");
         $this->newLine();
 
-        $this->info("\t<fg=white;bg=green>INFO</>\t <fg=white>API controller ${controllerName}Controller created successfully.</>");
-        $this->newLine(1);
+        // Custom make:service command
+        Artisan::call('make:service ' . $baseFilesPath .'/' .$controllerNameWithoutSuffix . 'Service');
+        $this->line("\t<fg=white;bg=green>INFO</>\t <fg=white>API service ${controllerNameWithoutSuffix}Service created successfully.</>");
+        $this->newLine();
 
+        $this->info("\t<fg=white;bg=green>INFO</>\t <fg=white>API controller ${controllerNameWithoutSuffix}Controller created successfully.</>");
+        $this->newLine();
     }
 }
