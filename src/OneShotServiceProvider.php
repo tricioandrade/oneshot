@@ -4,6 +4,7 @@ namespace OneShot\Builder;
 
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\ServiceProvider;
+use OneShot\Builder\Enum\StubsFiles;
 
 
 class OneShotServiceProvider extends ServiceProvider
@@ -23,19 +24,18 @@ class OneShotServiceProvider extends ServiceProvider
     }
 
     /**
+     * Copy default stubs to laravel resources/stubs dir.
      */
     public function boot()
     {
-        if (!File::exists(resource_path('stubs'))):
-            $api = File::get(__DIR__.'stubs/create.api-controller.stub');
-            $enum = File::get(__DIR__.'stubs/create.enum.stub');
-            $trait = File::get(__DIR__.'stubs/create.trait.stub');
-            $service = File::get(__DIR__.'stubs/create.service.stub');
+        $resourcePath = resource_path('stubs') . '\\' ;
+        $defaultStubsPath = __DIR__ . '\\stubs\\';
 
-            File::put(resource_path('stubs').'create.api-controller.stub', $api);
-            File::put(resource_path('stubs').'create.enum.stub', $enum);
-            File::put(resource_path('stubs').'create.trait.stub', $trait);
-            File::put(resource_path('stubs').'create.service.stub', $service);
-        endif;
+        foreach (StubsFiles::values() as $stub){
+            if (!File::exists($resourcePath . $stub)):
+                $content = File::get($defaultStubsPath . $stub);
+                File::put($resourcePath . $stub, $content);
+            endif;
+        }
     }
 }
