@@ -1,4 +1,4 @@
-# oneshot
+# OneShot
 _Laravel_ artisan extra commands
 
 [![Latest Stable Version](http://poser.pugx.org/tricioandrade/oneshot/v)](https://packagist.org/packages/tricioandrade/oneshot) [![Total Downloads](http://poser.pugx.org/tricioandrade/oneshot/downloads)](https://packagist.org/packages/tricioandrade/oneshot) [![License](http://poser.pugx.org/tricioandrade/oneshot/license)](https://packagist.org/packages/tricioandrade/oneshot) [![PHP Version Require](http://poser.pugx.org/tricioandrade/oneshot/require/php)](https://packagist.org/packages/tricioandrade/oneshot)
@@ -85,7 +85,8 @@ trait EmployeeFunctions
 php artisan make:service EmployeeFunctionsService
 ```
 <p>Will create EmployeeFunctionsService.php file, like this:</p>
-<i>app/Services/EmployeeFunctionsService.php</i>
+
+`app/Services/EmployeeFunctionsService.php`
 
 <p>The imported class: </p>
 
@@ -96,7 +97,7 @@ use App\Models\EmployeeFunctionsService\EmployeeFunctionsServiceModel
 <p>Importing the model <i>EmployeeFunctionsServiceModel</i> and other classes is optional, it will not exist after creating the <i>service</i>. You can adapt the code however you want. Setup his template as you wish at: 
 
 ```
-stubs\create.service.stub</i>
+stubs\create.service.stub
 ```
 
 ```php
