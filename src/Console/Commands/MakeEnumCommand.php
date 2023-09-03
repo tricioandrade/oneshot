@@ -1,15 +1,6 @@
 <?php
 
-/**
- * Created by Patricio Andrade
- * @github tricioandrade
- * @link https://github.com/tricioandrade
- *
- * LinkedIn
- * @link https://linkedin.com/tricioandrade
- */
-
-namespace OneShot\Builder\Commands;
+namespace OneShot\Builder\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
@@ -17,28 +8,28 @@ use Illuminate\Support\Facades\File;
 class MakeEnumCommand extends Command
 {
     /**
-     * The name and signature of the console command.
+     * The name and signature of the Console command.
      *
      * @var string
      */
     protected $signature = 'make:enum {name}';
 
     /**
-     * The console command description.
+     * The Console command description.
      *
      * @var string
      */
     protected $description = 'Create Enum objects';
 
     /**
-     * Execute the console command.
+     * Execute the Console command.
      */
     public function handle()
     {
         $enumName   = $this->argument('name');
         $enumPath   = app_path().'\\Enums';
         $namespace  = 'App\\Enums';
-        $enumStub   = File::get(resource_path('stubs/create.enum.stub'));
+        $enumStub   = File::get(base_path('stubs/create.enum.stub'));
 
         if (str_contains($enumName, '/')) {
             $array      = explode('/', $enumName);
@@ -52,9 +43,11 @@ class MakeEnumCommand extends Command
             $enumPath = app_path().'\\Enums\\'.implode('/',$array);
             $namespace   = 'App\\Enums\\'. implode('\\', $array);
 
-            if (!File::exists($enumPath)) {
-                File::makeDirectory($enumPath, 0755, true);
-            }
+
+        }
+
+        if (!File::exists($enumPath)) {
+            File::makeDirectory($enumPath, 0755, true);
         }
 
         $enumStub = str_replace([ 'DummyClass','DummyNamespace'], [$enumName, $namespace], $enumStub);

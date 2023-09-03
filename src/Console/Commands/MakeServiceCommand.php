@@ -1,16 +1,6 @@
 <?php
 
-/**
- * Created by Patricio Andrade
- * @github tricioandrade
- * @link https://github.com/tricioandrade
- *
- * LinkedIn
- * @link https://linkedin.com/tricioandrade
- */
-
-
-namespace OneShot\Builder\Commands;
+namespace OneShot\Builder\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
@@ -18,28 +8,28 @@ use Illuminate\Support\Facades\File;
 class MakeServiceCommand extends Command
 {
     /**
-     * The name and signature of the console command.
+     * The name and signature of the Console command.
      *
      * @var string
      */
     protected $signature = 'make:service {name}';
 
     /**
-     * The console command description.
+     * The Console command description.
      *
      * @var string
      */
     protected $description = 'Create services';
 
     /**
-     * Execute the console command.
+     * Execute the Console command.
      */
     public function handle()
     {
         $serviceName = $this->argument('name');
         $servicePath = app_path().'\\Services';
         $namespace   = 'App\\Services';
-        $serviceStub = File::get(resource_path('stubs/create.service.stub'));
+        $serviceStub = File::get(base_path('stubs/create.service.stub'));
         $fullNameWithoutSuffix = $serviceName;
 
         $baseFilesPath = str_replace('\\', "/", $fullNameWithoutSuffix);
@@ -62,9 +52,11 @@ class MakeServiceCommand extends Command
             $servicePath = app_path().'\\Services\\'.implode('/',$array);
             $namespace   = 'App\\Services\\'. implode('\\', $array);
 
-            if (!File::exists($servicePath)) {
-                File::makeDirectory($servicePath, 0755, true);
-            }
+
+        }
+
+        if (!File::exists($servicePath)) {
+            File::makeDirectory($servicePath, 0755, true);
         }
 
         $DummyNamespace         = str_replace('/', "\\" ,$namespace);

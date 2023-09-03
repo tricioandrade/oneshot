@@ -1,15 +1,6 @@
 <?php
 
-/**
- * Created by Patricio Andrade
- * @github tricioandrade
- * @link https://github.com/tricioandrade
- *
- * LinkedIn
- * @link https://linkedin.com/tricioandrade
- */
-
-namespace OneShot\Builder\Commands;
+namespace OneShot\Builder\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
@@ -17,28 +8,28 @@ use Illuminate\Support\Facades\File;
 class MakeTraitCommand extends Command
 {
     /**
-     * The name and signature of the console command.
+     * The name and signature of the Console command.
      *
      * @var string
      */
     protected $signature = 'make:trait {name}';
 
     /**
-     * The console command description.
+     * The Console command description.
      *
      * @var string
      */
     protected $description = 'Create trait command';
 
     /**
-     * Execute the console command.
+     * Execute the Console command.
      */
     public function handle()
     {
         $traitName   = $this->argument('name');
         $traitPath   = app_path().'\\Traits';
         $namespace  = 'App\\Traits';
-        $traitStub   = File::get(resource_path('stubs/create.trait.stub'));
+        $traitStub   = File::get(base_path('stubs/create.trait.stub'));
 
         if (str_contains($traitName, '/')) {
             $array      = explode('/', $traitName);
@@ -52,9 +43,11 @@ class MakeTraitCommand extends Command
             $traitPath = app_path().'\\Traits\\'.implode('/',$array);
             $namespace   = 'App\\Traits\\'. implode('\\', $array);
 
-            if (!File::exists($traitPath)) {
-                File::makeDirectory($traitPath, 0755, true);
-            }
+
+        }
+
+        if (!File::exists($traitPath)) {
+            File::makeDirectory($traitPath, 0755, true);
         }
 
         $traitStub = str_replace([ 'DummyTrait','DummyNamespace'], [$traitName, $namespace], $traitStub);

@@ -1,15 +1,6 @@
 <?php
 
-/**
- * Created by Patricio Andrade
- * @github tricioandrade
- * @link https://github.com/tricioandrade
- *
- * LinkedIn
- * @link https://linkedin.com/tricioandrade
- */
-
-namespace OneShot\Builder\Commands;
+namespace OneShot\Builder\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
@@ -18,21 +9,21 @@ use Illuminate\Support\Facades\File;
 class MakeApiControllerCommand extends Command
 {
     /**
-     * The name and signature of the console command.
+     * The name and signature of the Console command.
      *
      * @var string
      */
     protected $signature = 'make:api-controller {name}';
 
     /**
-     * The console command description.
+     * The Console command description.
      *
      * @var string
      */
     protected $description = 'Command description';
 
     /**
-     * Execute the console command.
+     * Execute the Console command.
      */
     public function handle()
     {
@@ -40,7 +31,7 @@ class MakeApiControllerCommand extends Command
 
         $controllerNamespace    = 'App\\Http\\Controllers';
         $controllerPath         = app_path().'\\'.'Http\\Controllers';
-        $controllerTemplateStub = File::get(resource_path('stubs/create.api-controller.stub'));
+        $controllerTemplateStub = File::get(base_path('stubs/create.api-controller.stub'));
 
         /**
          * Remove the Controller Suffix if exists,
