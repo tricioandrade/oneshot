@@ -31,7 +31,7 @@ class MakeApiControllerCommand extends Command
 
         $controllerNamespace    = 'App\\Http\\Controllers';
         $controllerPath         = app_path().'\\'.'Http\\Controllers';
-        $controllerTemplateStub = File::get(base_path('stubs/create.api-controller.stub'));
+        $controllerTemplateStub = File::get(base_path('stubs/create.api-resources.stub'));
 
         /**
          * Remove the Controller Suffix if exists,
