@@ -11,9 +11,7 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "OneShot\\Builder\\": "src/",
-            "OneShot\\Builder\\Commands\\": "src/commands",
-            "OneShot\\Builder\\Enum\\": "src/enum"
+            "OneShot\\Builder\\": "src/"
         }
     },
     "extra": {
