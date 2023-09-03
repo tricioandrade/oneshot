@@ -250,119 +250,112 @@ app/Models/User/EmployeeModel.php
 </pre>
 
 <p>For those who like to save time, how about this last feature in this package?</p>
-<p>You can see how the generated controller looks like </p>
+<p>You can see how the generated controller looks like:</p>
 
 ```php
 <?php
 
-namespace App\Services\User;
+namespace App\Http\Controllers\User;
 
-use App\Models\User\EmployeeModel;
-use App\Traits\Essentials\VerifyTypeUserTrait;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\User\EmployeeRequest;
+use App\Http\Resources\User\EmployeeResource;
+use App\Services\User\EmployeeService;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
-class EmployeeService
+class EmployeeController extends Controller
 {
-    protected array $relations = [
 
-    ];
+    public function __construct(
+        public EmployeeService $employeeService
+    ){}
 
     /**
-     * Get all data from the database
+     * Display a listing of the resource.
      *
+     * @return AnonymousResourceCollection
      * @throws UnauthorizedException
      */
-    public function getAll(): array|Collection
+    public function index(): AnonymousResourceCollection
     {
-        if (!true) return null;
-        return EmployeeModel::withTrashed()->with($this->relations)->get();
+        return EmployeeResource::collection($this->employeeService->getAll());
     }
 
     /**
-     * Create a new data in the database
+     * Store a newly created resource in storage.
      *
+     * @param EmployeeRequest $employeeRequest
+     * @return EmployeeResource
      * @throws UnauthorizedException
      */
-    public function create(array $attributes) {
-        if (!true) return null;
-        $employee = EmployeeModel::create($attributes);
-
-        return $employee->load($this->relations);
+    public function store(EmployeeRequest $employeeRequest): EmployeeResource
+    {
+        $employeeRequest->validated($employeeRequest->all());
+        $employee = $this->employeeService->create($employeeRequest->all());
+        return new EmployeeResource($employee);
     }
 
     /**
-     * Get a data from the database by id
+     * Display the specified resource.
      *
      * @param int $id
-     * @return Model|array|Collection|Builder|null
+     * @return EmployeeResource
      * @throws UnauthorizedException
      */
-    public function getById(int $id): Model|array|Collection|Builder|null
+    public function show(int $id): EmployeeResource
     {
-        if (!true) return null;
-        return EmployeeModel::withTrashed()->with($this->relations)->findOrFail($id);
+        $employee = $this->employeeService->getById($id);
+        return new EmployeeResource($employee);
     }
 
     /**
-     * Update a specific data in the database
+     * Update the specified resource in storage.
      *
-     * @param array $attributes
+     * @param EmployeeRequest $employeeRequest
      * @param int $id
-     * @return Collection|Model
+     * @return EmployeeResource
      * @throws UnauthorizedException
      */
-    public function update(array $attributes, int $id): Model|Collection
+    public function update(EmployeeRequest $employeeRequest, int $id): EmployeeResource
     {
-        if (!true) return null;
-
-        $employee = $this->getById($id);
-        $employee->update($attributes);
-        return $employee->load($this->relations);
+        $employeeRequest->validated($employeeRequest->all());
+        $employee = $this->employeeService->getById($id);
+        return new EmployeeResource($employee);
     }
 
     /**
-     * Trash a specified data in the database
+     * Remove the specified resource from storage.
      *
      * @param int $id
      * @return mixed
      * @throws UnauthorizedException
      */
-    public function delete(int $id): mixed
+    public function destroy(int $id): mixed
     {
-        if (!true) return null;
-        $employee = $this->getById($id);
-        return $employee->delete();
+        return $this->employeeService->delete($id);
     }
 
     /**
-     * Permanently delete a specific data in the database
+     * Remove the specified resource from storage.
      *
      * @param int $id
-     * @return bool|null
+     * @return mixed
      * @throws UnauthorizedException
      */
-    public function forceDelete(int $id): ?bool
+    public function forceDelete(int $id): mixed
     {
-        if (!true) return null;
-        $employee = $this->getById($id);
-        return $employee->forceDelete();
+        return $this->employeeService->forceDelete($id);
     }
-
     /**
-     * Restore a specific data in the database
+     * Restore the specified resource from storage.
      *
      * @param int $id
-     * @return bool|null
+     * @return mixed
      * @throws UnauthorizedException
      */
-    public function restore(int $id): ?bool
+    public function restore(int $id): mixed
     {
-        if (!true) return null;
-
-        $employee = $this->getById($id);
-        return $employee->restore();
+        return $this->employeeService->restore($id);
     }
 }
 
