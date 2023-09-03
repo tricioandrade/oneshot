@@ -39,6 +39,8 @@ class OneShotServiceProvider extends ServiceProvider
         $resourcePath = config('oneshot.path') . '\\' ;
         $defaultStubsPath = __DIR__ . '\\Templates\\Stubs\\';
 
+        if (!File::exists(base_path('stubs'))) File::makeDirectory(base_path('stubs'));
+
         foreach (StubsFilesEnum::values() as $stub){
             if (!File::exists($resourcePath . $stub)):
                 $content = File::get($defaultStubsPath . $stub);
