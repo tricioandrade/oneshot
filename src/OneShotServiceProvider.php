@@ -37,7 +37,7 @@ class OneShotServiceProvider extends ServiceProvider
     public function copyDefaultTemplates()
     {
         $resourcePath = config('oneshot.path') . '\\' ;
-        $defaultStubsPath = __DIR__ . '\\stubs\\';
+        $defaultStubsPath = __DIR__ . '\\Templates\\Stubs\\';
 
         foreach (StubsFilesEnum::values() as $stub){
             if (!File::exists($resourcePath . $stub)):
