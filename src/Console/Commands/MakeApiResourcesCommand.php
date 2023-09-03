@@ -6,14 +6,14 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 
-class MakeApiControllerCommand extends Command
+class MakeApiResourcesCommand extends Command
 {
     /**
      * The name and signature of the Console command.
      *
      * @var string
      */
-    protected $signature = 'make:api-controller {name}';
+    protected $signature = 'make:api-resources {name}';
 
     /**
      * The Console command description.

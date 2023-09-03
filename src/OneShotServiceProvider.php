@@ -7,7 +7,6 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\ServiceProvider;
 use OneShot\Builder\Enum\Templates\StubsFilesEnum;
 
-
 class OneShotServiceProvider extends ServiceProvider
 {
 
@@ -17,7 +16,7 @@ class OneShotServiceProvider extends ServiceProvider
     public function register()
     {
         $this->commands([
-            \OneShot\Builder\Console\Commands\MakeApiControllerCommand::class,
+            \OneShot\Builder\Console\Commands\MakeApiResourcesCommand::class,
             \OneShot\Builder\Console\Commands\MakeEnumCommand::class,
             \OneShot\Builder\Console\Commands\MakeServiceCommand::class,
             \OneShot\Builder\Console\Commands\MakeTraitCommand::class,
