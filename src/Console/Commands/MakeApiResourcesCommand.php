@@ -69,6 +69,7 @@ class MakeApiResourcesCommand extends Command
 
             array_pop($argumentArrayResult);
 
+            $baseFilesPath      = str_replace('/', "\\", implode('\\', $argumentArrayResult));
             $controllerPath     = app_path().'\\Http\\Controllers\\'. $baseFilesPath;
             $controllerNamespace = 'App\\Http\\Controllers\\'. implode('\\', $argumentArrayResult);
         }
