@@ -140,7 +140,7 @@ class MakeApiResourcesCommand extends Command
         $this->newLine();
 
         // Custom make:service command
-        Artisan::call('make:service ' . $baseFilesPath .'\\' .$controllerNameWithoutSuffix . 'Service');
+        Artisan::call('make:service', ['name' => $baseFilesPath .'\\' .$controllerNameWithoutSuffix . 'Service']);
         $this->line("\t<fg=white;bg=green>INFO</>\t <fg=white>API service ${controllerNameWithoutSuffix}Service created successfully.</>");
         $this->newLine();
 
