@@ -26,7 +26,8 @@ class MakeServiceCommand extends Command
      */
     public function handle()
     {
-        $serviceName            = $this->argument('name');
+        $argument               = $this->argument('name');
+        $serviceName            = $argument;
         $servicePath            = app_path().'\\Services';
         $serviceNamespace       = 'App\\Services';
         $baseModelNamespace     = 'App\\Models';
@@ -41,8 +42,6 @@ class MakeServiceCommand extends Command
         $serviceNameWithoutSuffixArray  = explode('\\', $fullParamWithoutSuffix);
         $serviceNameWithoutSuffix       = end($serviceNameWithoutSuffixArray);
 
-        print_r($serviceNameWithoutSuffixArray);
-
         /**
          * Set model class name
          */
@@ -52,7 +51,7 @@ class MakeServiceCommand extends Command
         /**
          * Get service path from given name.
          */
-        $baseFilesPath = str_replace('/', "\\", $serviceNameWithoutSuffix);
+        $baseFilesPath = $servicePath . $fullParamWithoutSuffix;
 
         /**
          * Verify if service name argument has Controller suffix like MyLovelyController
@@ -71,32 +70,30 @@ class MakeServiceCommand extends Command
          * @var $serviceNamesPace
          *
          */
-        if (str_contains($serviceName, '/') || str_contains($serviceName, '\\')) {
-            $argumentArrayResult = explode('/', $serviceName);
-            $argumentArrayResult = explode('\\', $serviceName);
+        if (str_contains($argument, '/')) {
+            $argumentArrayResult = explode('/', $argument);
             $serviceName         = end($argumentArrayResult);
+
+            $m = explode('/', $modelClassName);
+            $modelClassName      = end($m);
 
             array_pop($argumentArrayResult);
 
-            $baseFilesPath       = implode('/', $argumentArrayResult);
+            $baseFilesPath       = $servicePath .'\\'. implode('\\', $argumentArrayResult);
             $servicePath         = app_path().'\\Services\\'. $baseFilesPath;
             $serviceNamespace    = $serviceNamespace .'\\'  . implode('\\', $argumentArrayResult);
             $baseModelNamespace  = $baseModelNamespace. '\\' .  implode('\\', $argumentArrayResult);
         }
 
-        if (!File::exists($servicePath)) File::makeDirectory($servicePath, 0755, true);
-
-        if (!File::exists($servicePath)) {
-            File::makeDirectory($servicePath, 0755, true);
-        }
+        if (!File::exists($baseFilesPath)) File::makeDirectory($baseFilesPath, 0755, true);
 
         $DummyNamespace         = $serviceNamespace;
         $DummyModelPath         = $baseModelNamespace . '\\' . $modelClassName;
         $DummyClass             = $serviceName;
         $DummyModelClass        = $modelClassName;
-        $DummyInScopeVariable   = lcfirst($serviceNameWithoutSuffix);
+        $DummyInScopeVariable   = lcfirst($serviceName);
 
-        $serviceTemplateStub = str_replace([
+        $serviceContent = str_replace([
             'DummyNamespace',
             'DummyModelPath',
             'DummyClass',
@@ -110,8 +107,8 @@ class MakeServiceCommand extends Command
             $DummyInScopeVariable
         ], $serviceTemplateStub);
 
-        $filePath = $servicePath. '\\' . $DummyClass . '.php';
-        File::put($filePath, $serviceTemplateStub);
+        $filePath = $baseFilesPath .'\\'. $DummyClass . '.php';
+        File::put($filePath, $serviceContent);
 
         $this->info("Service ${serviceName} created successfully.");
     }

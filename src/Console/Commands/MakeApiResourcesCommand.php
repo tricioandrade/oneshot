@@ -84,6 +84,7 @@ class MakeApiResourcesCommand extends Command
         $DummyServiceClass          = $controllerNameWithoutSuffix . 'Service';
         $DummyRequestClass          = $controllerNameWithoutSuffix . 'Request';
 
+
         $DummyServiceClassPath      = 'App\\Services\\'. str_replace("/","\\",$baseFilesPath) . '\\'  . $controllerNameWithoutSuffix . 'Service';
         $DummyRequestClassPath      = 'App\\Http\\Requests\\'. str_replace("/","\\",$baseFilesPath) . '\\'  .$controllerNameWithoutSuffix . 'Request' ;
         $DummyResourceClassPath     = 'App\\Http\\Resources\\'. str_replace("/","\\",$baseFilesPath) . '\\'  .$controllerNameWithoutSuffix .'Resource';
@@ -134,13 +135,13 @@ class MakeApiResourcesCommand extends Command
         $this->newLine();
 
         // Create Model and migration
-        Artisan::call('make:model', ['name'          => $baseFilesPath .'\\' .$controllerNameWithoutSuffix . 'Model', '--migration'   => true]);
+        Artisan::call('make:model', ['name' => $baseFilesPath .'\\' .$controllerNameWithoutSuffix . 'Model', '--migration'   => true]);
 
         $this->line("\t<fg=white;bg=green>INFO</>\t <fg=white>API model ${controllerNameWithoutSuffix}Model created successfully.</>");
         $this->newLine();
 
         // Custom make:service command
-        Artisan::call('make:service', ['name' => $baseFilesPath .'\\' .$controllerNameWithoutSuffix . 'Service']);
+        Artisan::call('make:service', ['name' => $baseFilesPath .'/' .$controllerNameWithoutSuffix . 'Service']);
         $this->line("\t<fg=white;bg=green>INFO</>\t <fg=white>API service ${controllerNameWithoutSuffix}Service created successfully.</>");
         $this->newLine();
 
