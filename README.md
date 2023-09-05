@@ -86,7 +86,7 @@ php artisan make:service EmployeeFunctionsService
 ```
 <p>Will create EmployeeFunctionsService.php file, like this:</p>
 
-`app/Services/EmployeeFunctionsService.php`
+<pre>app/Services/EmployeeFunctionsService.php</pre>
 
 <p>The imported class: </p>
 
@@ -96,9 +96,7 @@ use App\Models\EmployeeFunctionsService\EmployeeFunctionsServiceModel
 
 <p>Importing the model <i>EmployeeFunctionsServiceModel</i> and other classes is optional, it will not exist after creating the <i>service</i>. You can adapt the code however you want. Setup his template as you wish at: 
 
-```
-stubs\create.service.stub
-```
+<pre>stubs\create.service.stub</pre>
 
 ```php
 <?php
@@ -226,9 +224,7 @@ php artisan make:api-resources User/Employee
 #### 1. Controller
 ###### <i>Oneshot customized controller file:</i>
 
-<pre>
-app/Http/Controllers/User/EmployeeController.php
-</pre>
+<pre>app/Http/Controllers/User/EmployeeController.php</pre>
 
 #### 2. Request
 ###### <i>Default laravel request file:</i>
