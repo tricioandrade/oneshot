@@ -3,7 +3,9 @@
     "description": "Laravel artisan extra commands",
     "type": "library",
     "require": {
-        "php": ">=8.1.0",
+        "php": ">=8.1.0"
+    },
+    "require-dev": {
         "illuminate/console": "v10.21.0",
         "illuminate/support": "v10.21.0"
     },
