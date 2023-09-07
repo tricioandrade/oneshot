@@ -64,7 +64,7 @@ class DummyClass extends Controller
     public function update(DummyRequestClass $DummyInstanceRequestClass, int $id): DummyResourceClass
     {
         $DummyInstanceRequestClass->validated($DummyInstanceRequestClass->all());
-        $DummyInScopeVariable = $this->DummyInstanceServiceClass->getById($id);
+        $DummyInScopeVariable = $this->DummyInstanceServiceClass->update($DummyInstanceRequestClass->all(), $id);
         return new DummyResourceClass($DummyInScopeVariable);
     }
 
