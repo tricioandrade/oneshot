@@ -356,3 +356,17 @@ class EmployeeController extends Controller
 }
 
 ```
+
+<h2 align="center">Special thanks to</h2> <hr>
+
+<table align="center">
+<tbody>
+<td>
+
+| [<img src="https://avatars0.githubusercontent.com/u/36607296?v=4=" width=115 style="border-radius: 50%" > <br> <sub> Emanuel Cândido </sub>](https://github.com/EmanuelJoseCandido) |
+| :------------------------------------------------------------------------------------------------------------------------------------------------------: |
+</td>
+
+</tbody>
+</table>
+
