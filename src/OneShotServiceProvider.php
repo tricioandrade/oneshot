@@ -23,9 +23,12 @@ class OneShotServiceProvider extends ServiceProvider
             \OneShot\Builder\Console\Commands\PublishConfigPackCommand::class
         ]);
 
+<<<<<<< Updated upstream
         Artisan::call('oneshot:publish');
 
         $this->copyDefaultTemplates();
+=======
+>>>>>>> Stashed changes
     }
 
     /**
@@ -33,11 +36,16 @@ class OneShotServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+<<<<<<< Updated upstream
 
+=======
+        $this->copyDefaultTemplates();
+>>>>>>> Stashed changes
     }
 
     public function copyDefaultTemplates()
     {
+<<<<<<< Updated upstream
 
         try {
 
@@ -59,6 +67,18 @@ class OneShotServiceProvider extends ServiceProvider
             }
         }catch (\Throwable $exception){
             print_r($exception->getMessage() . "\n");
+=======
+        $resourcePath = base_path() . '\stubs' ;
+        $defaultStubsPath = __DIR__ . '\\Templates\\Stubs\\';
+
+        if (!File::exists($resourcePath)) File::makeDirectory($resourcePath);
+
+        foreach (StubsFilesEnum::values() as $file){
+            if (!File::exists($resourcePath .'\\'. $file)):
+                $content = File::get($defaultStubsPath .'\\'. $file);
+                File::put($resourcePath .'\\'. $file, $content);
+            endif;
+>>>>>>> Stashed changes
         }
     }
 }
