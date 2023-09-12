@@ -112,6 +112,7 @@ class MakeServiceCommand extends Command
         
         $this->makeCrudTrait($DummyModelClass, $DummyModelPath);
 
+        Artisan::call('make:exception ', ['name' => 'Auth/UnauthorizedException']);
         Artisan::call('make:trait ', ['name' => 'Auth/VerifyUserPrivilegeTrait']);
 
         $this->info("Service ". $serviceName ." created successfully.");
