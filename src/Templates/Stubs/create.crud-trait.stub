@@ -3,106 +3,6 @@
 namespace App\Traits\Essentials\Database;
 
 use Illuminate\Database\Eloquent\Builder;
-<<<<<<< Updated upstream
-use DummyModelPath;
-
-trait CrudTrait
-{
-    use CrudTrait, VerifyUserPrivilegeTrait;
-
-    public function __construct()
-    {
-        $this->relations    = [];
-        $this->model        = new DummyModelClass();
-    }
-
-    /**
-     * Get all data from the database
-     *
-     * @throws UnauthorizedException
-     */
-    public function getAll(): Model|Builder|Collection|array|null
-    {
-        if ($this->verifyAdmin()) throw new UnauthorizedException();
-        return $this->getAllData();
-    }
-
-    /**
-     * Create a new data in the database
-     *
-     * @throws UnauthorizedException
-     */
-    public function create(array $attributes) {
-        if ($this->verifyAdmin()) throw new UnauthorizedException();
-
-        return $this->createData($attributes);
-    }
-
-    /**
-     * Get a data from the database by id
-     *
-     * @param int $id
-     * @return Model|Builder|Collection|array|null
-     * @throws UnauthorizedException
-     */
-    public function getById(int $id): Model|Builder|Collection|array|null
-    {
-        if ($this->verifyAdmin()) throw new UnauthorizedException();
-        return $this->getByIdentity($id);
-    }
-
-    /**
-     * Update a specific data in the database
-     *
-     * @param array $attributes
-     * @param int $id
-     * @return Collection|Model
-     * @throws UnauthorizedException
-     */
-    public function update(array $attributes, int $id): Model|Builder|Collection|array|null
-    {
-        if ($this->verifyAdmin()) throw new UnauthorizedException();
-        return  $this->updateData($attributes, $id);
-    }
-
-    /**
-     * Trash a specified data in the database
-     *
-     * @param int $id
-     * @return mixed
-     * @throws UnauthorizedException
-     */
-    public function delete(int $id): mixed
-    {
-        if ($this->verifyAdmin()) throw new UnauthorizedException();
-        return $this->deleteData($id);
-    }
-
-    /**
-     * Permanently delete a specific data in the database
-     *
-     * @param int $id
-     * @return mixed
-     * @throws UnauthorizedException
-     */
-    public function forceDelete(int $id): mixed
-    {
-        if ($this->verifyAdmin()) throw new UnauthorizedException();
-        return $this->forceDeleteData($id);
-    }
-
-    /**
-     * Restore a specific data in the database
-     *
-     * @param int $id
-     * @return mixed
-     * @throws UnauthorizedException
-     */
-    public function restore(int $id): mixed
-    {
-        if ($this->verifyAdmin()) throw new UnauthorizedException();
-        return $this->restoreData($id);
-=======
 use Illuminate\Database\Eloquent\Model;
 
 trait CrudTrait
@@ -216,6 +116,5 @@ trait CrudTrait
     {
         $target = $this->getByIdentity($id);
         return $target->restore($id);
->>>>>>> Stashed changes
     }
 }
