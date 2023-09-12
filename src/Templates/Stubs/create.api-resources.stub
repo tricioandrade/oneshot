@@ -3,6 +3,7 @@
 namespace DummyNamespace;
 
 use App\Http\Controllers\Controller;
+use App\Exceptions\Auth\UnauthorizedException;
 use DummyRequestPath;
 use DummyResourcePath;
 use DummyServicePath;
@@ -91,6 +92,7 @@ class DummyClass extends Controller
     {
         return $this->DummyInstanceServiceClass->forceDelete($id);
     }
+
     /**
      * Restore the specified resource from storage.
      *
