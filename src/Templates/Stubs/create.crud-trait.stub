@@ -3,6 +3,7 @@
 namespace App\Traits\Essentials\Database;
 
 use Illuminate\Database\Eloquent\Builder;
+<<<<<<< Updated upstream
 use DummyModelPath;
 
 trait CrudTrait
@@ -101,5 +102,120 @@ trait CrudTrait
     {
         if ($this->verifyAdmin()) throw new UnauthorizedException();
         return $this->restoreData($id);
+=======
+use Illuminate\Database\Eloquent\Model;
+
+trait CrudTrait
+{
+    private array | string $relations;
+    private Model | Builder $model;
+
+    /**
+     * Get all data
+     *
+     * @return mixed
+     */
+    private function getAllData(): mixed
+    {
+        return $this->model::withTrashed()->with($this->relations)->get();
+    }
+
+    /**
+     * Get data by Id
+     *
+     * @param int $id
+     * @return mixed
+     */
+    private function getByIdentity(  int $id): mixed
+    {
+        return $this->model::withTrashed()->with($this->relations)->findId($id)->get();
+    }
+
+    /**
+     * Get data by slug
+     *
+     * @param string $slug
+     * @return mixed
+     */
+    private function getBySlugInfo(string $slug): mixed
+    {
+        return $this->model::withTrashed()->with($this->relations)->where('slug', $slug)->get();
+    }
+
+    /**
+     * Get data by anonymous row
+     *
+     * @param string $anonymousRow
+     * @param $value
+     * @return mixed
+     */
+    private function getByAnonymousInfo(string $anonymousRow, $value): mixed
+    {
+        return $this->model::withTrashed()->with($this->relations)->where($anonymousRow, $value)->get();
+    }
+
+    /**
+     * Create data
+     *
+     * @param array $attributes
+     * @return mixed
+     */
+    private function createData(array $attributes): mixed
+    {
+        $create = $this->model::create($attributes);
+
+        return $create->load($this->relations);
+    }
+
+    /**
+     * Update data
+     *
+     * @param int $id
+     * @param array $attributes
+     * @return mixed
+     */
+    private function updateData(array $attributes, int $id): mixed
+    {
+        $update = $this->getByIdentity($id);
+        $update->update($attributes);
+
+        return $update->load($this->relations);
+    }
+
+    /**
+     * Delete data | put on trash
+     *
+     * @param int $id
+     * @return mixed
+     */
+    private function deleteData(int $id): mixed
+    {
+        $target = $this->getByIdentity($id);
+        return $target->delete($id);
+    }
+
+    /**
+     * Delete data permanently
+     *
+     * @param int $id
+     * @return mixed
+     */
+    private function forceDeleteData(int $id): mixed
+    {
+        $target = $this->getByIdentity($id);
+        return $target->forceDelete($id);
+    }
+
+    /**
+     * Restore data from database
+     *
+     * @param int $id
+     * @return mixed
+     */
+    private function restoreData(int $id): mixed
+    {
+        $target = $this->getByIdentity($id);
+        return $target->restore($id);
+>>>>>>> Stashed changes
     }
 }
