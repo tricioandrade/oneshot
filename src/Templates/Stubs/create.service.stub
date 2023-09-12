@@ -2,26 +2,33 @@
 
 namespace DummyNamespace;
 
+use App\Exceptions\Auth\UnauthorizedException;
 use DummyModelPath;
+use App\Traits\Essentials\Auth\VerifyUserPrivilegeTrait;
+use App\Traits\Essentials\Database\CrudTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
 class DummyClass
 {
-    protected array $relations = [
+    use CrudTrait, VerifyUserPrivilegeTrait;
 
-    ];
+    public function __construct()
+    {
+        $this->relations    = [];
+        $this->model        = new DummyModelClass();
+    }
 
     /**
      * Get all data from the database
      *
      * @throws UnauthorizedException
      */
-    public function getAll(): array|Collection
+    public function getAll(): Model|Builder|Collection|array|null
     {
-        if (!true) return null;
-        return DummyModelClass::withTrashed()->with($this->relations)->get();
+        // if ($this->verifyAdmin()) throw new UnauthorizedException();
+        return $this->getAllData();
     }
 
     /**
@@ -30,23 +37,22 @@ class DummyClass
      * @throws UnauthorizedException
      */
     public function create(array $attributes) {
-        if (!true) return null;
-        $DummyInScopeVariable = DummyModelClass::create($attributes);
+        // if ($this->verifyAdmin()) throw new UnauthorizedException();
 
-        return $DummyInScopeVariable->load($this->relations);
+        return $this->createData($attributes);
     }
 
     /**
      * Get a data from the database by id
      *
      * @param int $id
-     * @return Model|array|Collection|Builder|null
+     * @return Model|Builder|Collection|array|null
      * @throws UnauthorizedException
      */
-    public function getById(int $id): Model|array|Collection|Builder|null
+    public function getById(int $id): Model|Builder|Collection|array|null
     {
-        if (!true) return null;
-        return DummyModelClass::withTrashed()->with($this->relations)->findOrFail($id);
+        // if ($this->verifyAdmin()) throw new UnauthorizedException();
+        return $this->getByIdentity($id);
     }
 
     /**
@@ -54,16 +60,13 @@ class DummyClass
      *
      * @param array $attributes
      * @param int $id
-     * @return Collection|Model
+     * @return Model|Builder|Collection|array|null
      * @throws UnauthorizedException
      */
-    public function update(array $attributes, int $id): Model|Collection
+    public function update(array $attributes, int $id): Model|Builder|Collection|array|null
     {
-        if (!true) return null;
-
-        $DummyInScopeVariable = $this->getById($id);
-        $DummyInScopeVariable->update($attributes);
-        return $DummyInScopeVariable->load($this->relations);
+        // if ($this->verifyAdmin()) throw new UnauthorizedException();
+        return  $this->updateData($attributes, $id);
     }
 
     /**
@@ -75,37 +78,33 @@ class DummyClass
      */
     public function delete(int $id): mixed
     {
-        if (!true) return null;
-        $DummyInScopeVariable = $this->getById($id);
-        return $DummyInScopeVariable->delete();
+        // if ($this->verifyAdmin()) throw new UnauthorizedException();
+        return $this->deleteData($id);
     }
 
     /**
      * Permanently delete a specific data in the database
      *
      * @param int $id
-     * @return bool|null
+     * @return mixed
      * @throws UnauthorizedException
      */
-    public function forceDelete(int $id): ?bool
+    public function forceDelete(int $id): mixed
     {
-        if (!true) return null;
-        $DummyInScopeVariable = $this->getById($id);
-        return $DummyInScopeVariable->forceDelete();
+        // if ($this->verifyAdmin()) throw new UnauthorizedException();
+        return $this->forceDeleteData($id);
     }
 
     /**
      * Restore a specific data in the database
      *
      * @param int $id
-     * @return bool|null
+     * @return mixed
      * @throws UnauthorizedException
      */
-    public function restore(int $id): ?bool
+    public function restore(int $id): mixed
     {
-        if (!true) return null;
-
-        $DummyInScopeVariable = $this->getById($id);
-        return $DummyInScopeVariable->restore();
+        // if ($this->verifyAdmin()) throw new UnauthorizedException();
+        return $this->restoreData($id);
     }
 }
