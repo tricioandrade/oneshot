@@ -22,10 +22,7 @@ class OneShotServiceProvider extends ServiceProvider
             \OneShot\Builder\Console\Commands\MakeTraitCommand::class,
             \OneShot\Builder\Console\Commands\PublishConfigPackCommand::class
         ]);
-
-        Artisan::call('oneshot:publish');
-
-        $this->copyDefaultTemplates();
+        
     }
 
     /**
@@ -33,7 +30,8 @@ class OneShotServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-
+        Artisan::call('oneshot:publish');
+        $this->copyDefaultTemplates();
     }
 
     public function copyDefaultTemplates()
