@@ -3,6 +3,7 @@
 namespace OneShot\Builder\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 
 class MakeServiceCommand extends Command
@@ -46,7 +47,7 @@ class MakeServiceCommand extends Command
          * Set model class name
          */
 
-        $modelClassName         = $serviceNameWithoutSuffix . 'Model';
+        $modelClassName = $serviceNameWithoutSuffix . 'Model';
 
         /**
          * Get service path from given name.
@@ -63,7 +64,6 @@ class MakeServiceCommand extends Command
          * Clear service name if it has / (slash)
          * and update current vars:
          *
-         * @var $serviceName
          * @var $serviceName
          * @var $baseFilesPath
          * @var $servicePath
@@ -109,7 +109,34 @@ class MakeServiceCommand extends Command
 
         $filePath = $baseFilesPath .'\\'. $DummyClass . '.php';
         File::put($filePath, $serviceContent);
+        
+        $this->makeCrudTrait($DummyModelClass, $DummyModelPath);
 
-        $this->info("Service ${serviceName} created successfully.");
+        Artisan::call('make:trait ', ['name' => 'Auth/VerifyUserPrivilegeTrait']);
+
+        $this->info("Service ". $serviceName ." created successfully.");
+        $this->info("Trait 'VerifyUserPrivilegeTrait' created successfully.");
+        $this->info("Trait 'CrudTrait' created successfully.");
+
+    }
+
+
+    private function makeCrudTrait($dummyModelPath, $dummyModelClass)
+    {
+        $crudTemplateStub  = File::get(base_path('stubs/create.crud-trait.stub'));
+        $crudTraitFileName = app_path()."\Traits\Essentials\Database\CrudTrait.php";
+        $crudTraitFilePath = app_path()."\Traits\Essentials\Database";
+
+        $template = str_replace([
+            'DummyModel',
+            'DummyModelPath'
+        ], [ $dummyModelClass, $dummyModelPath ], file_get_contents($crudTemplateStub));
+
+        if (!is_file($crudTraitFileName)){
+            
+            if (!File::isDirectory($crudTraitFilePath)) File::makeDirectory($crudTraitFilePath);
+
+            File::put($crudTraitFileName, $template);
+        }
     }
 }
