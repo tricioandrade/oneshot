@@ -30,6 +30,7 @@ class OneShotServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Artisan::call('oneshot:publish');
         $this->copyDefaultTemplates();
     }
 

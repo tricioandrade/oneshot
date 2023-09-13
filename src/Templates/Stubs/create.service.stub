@@ -6,9 +6,7 @@ use App\Exceptions\Auth\UnauthorizedException;
 use DummyModelPath;
 use App\Traits\Essentials\Auth\VerifyUserPrivilegeTrait;
 use App\Traits\Essentials\Database\CrudTrait;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 
 class DummyClass
 {
@@ -25,7 +23,7 @@ class DummyClass
      *
      * @throws UnauthorizedException
      */
-    public function getAll(): Model|Builder|Collection|array|null
+    public function getAll(): DummyModelClass|Collection
     {
         // if ($this->verifyAdmin()) throw new UnauthorizedException();
         return $this->getAllData();
@@ -46,10 +44,10 @@ class DummyClass
      * Get a data from the database by id
      *
      * @param int $id
-     * @return Model|Builder|Collection|array|null
+     * @return DummyModelClass|Collection
      * @throws UnauthorizedException
      */
-    public function getById(int $id): Model|Builder|Collection|array|null
+    public function getById(int $id): DummyModelClass|Collection
     {
         // if ($this->verifyAdmin()) throw new UnauthorizedException();
         return $this->getByIdentity($id);
@@ -60,10 +58,10 @@ class DummyClass
      *
      * @param array $attributes
      * @param int $id
-     * @return Model|Builder|Collection|array|null
+     * @return DummyModelClass|Collection
      * @throws UnauthorizedException
      */
-    public function update(array $attributes, int $id): Model|Builder|Collection|array|null
+    public function update(array $attributes, int $id): DummyModelClass|Collection
     {
         // if ($this->verifyAdmin()) throw new UnauthorizedException();
         return  $this->updateData($attributes, $id);
