@@ -3,103 +3,118 @@
 namespace App\Traits\Essentials\Database;
 
 use Illuminate\Database\Eloquent\Builder;
-use DummyModelPath;
+use Illuminate\Database\Eloquent\Model;
 
 trait CrudTrait
 {
-    use CrudTrait, VerifyUserPrivilegeTrait;
-
-    public function __construct()
-    {
-        $this->relations    = [];
-        $this->model        = new DummyModelClass();
-    }
+    private array | string $relations;
+    private Model | Builder $model;
 
     /**
-     * Get all data from the database
+     * Get all data
      *
-     * @throws UnauthorizedException
+     * @return mixed
      */
-    public function getAll(): Model|Builder|Collection|array|null
+    private function getAllData(): mixed
     {
-        if ($this->verifyAdmin()) throw new UnauthorizedException();
-        return $this->getAllData();
+        return $this->model::withTrashed()->with($this->relations)->get();
     }
 
     /**
-     * Create a new data in the database
-     *
-     * @throws UnauthorizedException
-     */
-    public function create(array $attributes) {
-        if ($this->verifyAdmin()) throw new UnauthorizedException();
-
-        return $this->createData($attributes);
-    }
-
-    /**
-     * Get a data from the database by id
+     * Get data by Id
      *
      * @param int $id
-     * @return Model|Builder|Collection|array|null
-     * @throws UnauthorizedException
+     * @return mixed
      */
-    public function getById(int $id): Model|Builder|Collection|array|null
+    private function getByIdentity(  int $id): mixed
     {
-        if ($this->verifyAdmin()) throw new UnauthorizedException();
-        return $this->getByIdentity($id);
+        return $this->model::withTrashed()->with($this->relations)->findId($id)->get();
     }
 
     /**
-     * Update a specific data in the database
+     * Get data by slug
+     *
+     * @param string $slug
+     * @return mixed
+     */
+    private function getBySlugInfo(string $slug): mixed
+    {
+        return $this->model::withTrashed()->with($this->relations)->where('slug', $slug)->get();
+    }
+
+    /**
+     * Get data by anonymous row
+     *
+     * @param string $anonymousRow
+     * @param $value
+     * @return mixed
+     */
+    private function getByAnonymousInfo(string $anonymousRow, $value): mixed
+    {
+        return $this->model::withTrashed()->with($this->relations)->where($anonymousRow, $value)->get();
+    }
+
+    /**
+     * Create data
      *
      * @param array $attributes
-     * @param int $id
-     * @return Collection|Model
-     * @throws UnauthorizedException
+     * @return mixed
      */
-    public function update(array $attributes, int $id): Model|Builder|Collection|array|null
+    private function createData(array $attributes): mixed
     {
-        if ($this->verifyAdmin()) throw new UnauthorizedException();
-        return  $this->updateData($attributes, $id);
+        $create = $this->model::create($attributes);
+
+        return $create->load($this->relations);
     }
 
     /**
-     * Trash a specified data in the database
+     * Update data
      *
      * @param int $id
+     * @param array $attributes
      * @return mixed
-     * @throws UnauthorizedException
      */
-    public function delete(int $id): mixed
+    private function updateData(array $attributes, int $id): mixed
     {
-        if ($this->verifyAdmin()) throw new UnauthorizedException();
-        return $this->deleteData($id);
+        $update = $this->getByIdentity($id);
+        $update->update($attributes);
+
+        return $update->load($this->relations);
     }
 
     /**
-     * Permanently delete a specific data in the database
+     * Delete data | put on trash
      *
      * @param int $id
      * @return mixed
-     * @throws UnauthorizedException
      */
-    public function forceDelete(int $id): mixed
+    private function deleteData(int $id): mixed
     {
-        if ($this->verifyAdmin()) throw new UnauthorizedException();
-        return $this->forceDeleteData($id);
+        $target = $this->getByIdentity($id);
+        return $target->delete($id);
     }
 
     /**
-     * Restore a specific data in the database
+     * Delete data permanently
      *
      * @param int $id
      * @return mixed
-     * @throws UnauthorizedException
      */
-    public function restore(int $id): mixed
+    private function forceDeleteData(int $id): mixed
     {
-        if ($this->verifyAdmin()) throw new UnauthorizedException();
-        return $this->restoreData($id);
+        $target = $this->getByIdentity($id);
+        return $target->forceDelete($id);
+    }
+
+    /**
+     * Restore data from database
+     *
+     * @param int $id
+     * @return mixed
+     */
+    private function restoreData(int $id): mixed
+    {
+        $target = $this->getByIdentity($id);
+        return $target->restore($id);
     }
 }

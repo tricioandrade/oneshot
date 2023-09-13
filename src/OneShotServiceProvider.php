@@ -22,7 +22,7 @@ class OneShotServiceProvider extends ServiceProvider
             \OneShot\Builder\Console\Commands\MakeTraitCommand::class,
             \OneShot\Builder\Console\Commands\PublishConfigPackCommand::class
         ]);
-        
+
     }
 
     /**
@@ -36,27 +36,16 @@ class OneShotServiceProvider extends ServiceProvider
 
     public function copyDefaultTemplates()
     {
+        $resourcePath = base_path() . '\stubs' ;
+        $defaultStubsPath = __DIR__ . '\\Templates\\Stubs\\';
 
-        try {
+        if (!File::exists($resourcePath)) File::makeDirectory($resourcePath);
 
-            $resourcePath = config('oneshot.path') . '\\' ;
-            $defaultStubsPath = __DIR__ . '\\Templates\\Stubs\\';
-
-            if (!File::exists(base_path('stubs'))) {
-                File::makeDirectory(base_path('stubs'));
-
-                foreach (StubsFilesEnum::values() as $stub) {
-
-                    if (!empty($resourcePath)) $resourcePath = base_path('stubs');
-
-                    if (!File::exists($resourcePath . $stub)):
-                        $content = File::get($defaultStubsPath . $stub);
-                        (File::put($resourcePath . $stub, $content));
-                    endif;
-                }
-            }
-        }catch (\Throwable $exception){
-            print_r($exception->getMessage() . "\n");
+        foreach (StubsFilesEnum::values() as $file){
+            if (!File::exists($resourcePath .'\\'. $file)):
+                $content = File::get($defaultStubsPath .'\\'. $file);
+                File::put($resourcePath .'\\'. $file, $content);
+            endif;
         }
     }
 }

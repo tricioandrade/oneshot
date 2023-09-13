@@ -109,11 +109,11 @@ class MakeServiceCommand extends Command
 
         $filePath = $baseFilesPath .'\\'. $DummyClass . '.php';
         File::put($filePath, $serviceContent);
-        
-        $this->makeCrudTrait($DummyModelClass, $DummyModelPath);
 
-        Artisan::call('make:exception ', ['name' => 'Auth/UnauthorizedException']);
-        Artisan::call('make:trait ', ['name' => 'Auth/VerifyUserPrivilegeTrait']);
+        $this->makeCrudTrait($DummyModelPath, $DummyModelClass);
+
+        Artisan::call('make:exception', ['name' => 'Auth/UnauthorizedException']);
+        Artisan::call('make:trait', ['name' => 'Auth/VerifyUserPrivilegeTrait']);
 
         $this->info("Service ". $serviceName ." created successfully.");
         $this->info("Trait 'VerifyUserPrivilegeTrait' created successfully.");
@@ -129,12 +129,12 @@ class MakeServiceCommand extends Command
         $crudTraitFilePath = app_path()."\Traits\Essentials\Database";
 
         $template = str_replace([
-            'DummyModel',
+            'DummyModelClass',
             'DummyModelPath'
-        ], [ $dummyModelClass, $dummyModelPath ], file_get_contents($crudTemplateStub));
+        ], [ $dummyModelClass, $dummyModelPath ], $crudTemplateStub);
 
         if (!is_file($crudTraitFileName)){
-            
+
             if (!File::isDirectory($crudTraitFilePath)) File::makeDirectory($crudTraitFilePath);
 
             File::put($crudTraitFileName, $template);
