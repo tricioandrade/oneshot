@@ -42,8 +42,7 @@ class MakeEnumCommand extends Command
             array_pop($array);
             $enumPath = app_path().'\\Enums\\'.implode('/',$array);
             $namespace   = 'App\\Enums\\'. implode('\\', $array);
-
-
+            
         }
 
         if (!File::exists($enumPath)) {
