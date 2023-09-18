@@ -28,7 +28,7 @@ trait CrudTrait
      */
     private function getByIdentity(  int $id): mixed
     {
-        return $this->model::withTrashed()->with($this->relations)->findId($id)->get();
+        return $this->model::withTrashed()->with($this->relations)->findOrFail($id)->get();
     }
 
     /**
