@@ -13,22 +13,6 @@ _Laravel_ artisan extra commands
 composer require tricioandrade/oneshot
 ```
 
-## Provider Registration
-<p>In the config/app.php file, register the package provider in the providers array. Add an entry for the provider in the 'providers' section:</p>
-
-```php
-'providers' => [
-    // ...
-    \OneShot\Builder\OneShotServiceProvider::class,
-], 
-```
-## Publish the configuration file
-<p>You must run:</p>
-
-```
-php artisan oneshot:publish
-```
-
 ## Generate your files
 <p>Create <i>Enum</i> files, your file will be created at app/Enum in yor Laravel project</p>
 
