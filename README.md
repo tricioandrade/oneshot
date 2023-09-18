@@ -103,26 +103,32 @@ use App\Models\EmployeeFunctionsService\EmployeeFunctionsServiceModel
 
 namespace App\Services;
 
-use App\Models\EmployeeFunctionsService\EmployeeFunctionsServiceModel;
-use Illuminate\Database\Eloquent\Builder;
+use App\Exceptions\Auth\UnauthorizedException;
+use App\Models\Transport\FuelSupplyModel;
+use App\Traits\Essentials\Database\CrudTrait;
+use App\Traits\Essentials\VerifyTypeUserTrait;
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 
-class EmployeeFunctionsService
+class FuelSupplyService
 {
-    protected array $relations = [
+    use CrudTrait, VerifyTypeUserTrait;
 
-    ];
+    public function __construct()
+    {
+        $this->relations    = [];
+
+        $this->model        = new FuelSupplyModel();
+    }
 
     /**
      * Get all data from the database
      *
      * @throws UnauthorizedException
      */
-    public function getAll(): array|Collection
+    public function getAll(): FuelSupplyModel|Collection
     {
-        if (!true) return null;
-        return EmployeeFunctionsServiceModel::withTrashed()->with($this->relations)->get();
+        if (!$this->verifyAdmin()) throw new UnauthorizedException();
+        return $this->getAllData();
     }
 
     /**
@@ -131,23 +137,21 @@ class EmployeeFunctionsService
      * @throws UnauthorizedException
      */
     public function create(array $attributes) {
-        if (!true) return null;
-        $employeeFunctionsService = EmployeeFunctionsServiceModel::create($attributes);
-
-        return $employeeFunctionsService->load($this->relations);
+        if (!$this->verifyAdmin()) throw new UnauthorizedException();
+        return $this->createData($attributes);
     }
 
     /**
      * Get a data from the database by id
      *
      * @param int $id
-     * @return Model|array|Collection|Builder|null
+     * @return FuelSupplyModel|Collection
      * @throws UnauthorizedException
      */
-    public function getById(int $id): Model|array|Collection|Builder|null
+    public function getById(int $id): FuelSupplyModel|Collection
     {
-        if (!true) return null;
-        return EmployeeFunctionsServiceModel::withTrashed()->with($this->relations)->findOrFail($id);
+        if (!$this->verifyAdmin()) throw new UnauthorizedException();
+        return $this->getByIdentity($id);
     }
 
     /**
@@ -155,16 +159,13 @@ class EmployeeFunctionsService
      *
      * @param array $attributes
      * @param int $id
-     * @return Collection|Model
+     * @return FuelSupplyModel|Collection
      * @throws UnauthorizedException
      */
-    public function update(array $attributes, int $id): Model|Collection
+    public function update(array $attributes, int $id): FuelSupplyModel|Collection
     {
-        if (!true) return null;
-
-        $employeeFunctionsService = $this->getById($id);
-        $employeeFunctionsService->update($attributes);
-        return $employeeFunctionsService->load($this->relations);
+        if (!$this->verifyAdmin()) throw new UnauthorizedException();
+        return  $this->updateData($attributes, $id);
     }
 
     /**
@@ -176,38 +177,34 @@ class EmployeeFunctionsService
      */
     public function delete(int $id): mixed
     {
-        if (!true) return null;
-        $employeeFunctionsService = $this->getById($id);
-        return $employeeFunctionsService->delete();
+        if (!$this->verifyAdmin()) throw new UnauthorizedException();
+        return $this->deleteData($id);
     }
 
     /**
      * Permanently delete a specific data in the database
      *
      * @param int $id
-     * @return bool|null
+     * @return mixed
      * @throws UnauthorizedException
      */
-    public function forceDelete(int $id): ?bool
+    public function forceDelete(int $id): mixed
     {
-        if (!true) return null;
-        $employeeFunctionsService = $this->getById($id);
-        return $employeeFunctionsService->forceDelete();
+        if (!$this->verifyAdmin()) throw new UnauthorizedException();
+        return $this->forceDeleteData($id);
     }
 
     /**
      * Restore a specific data in the database
      *
      * @param int $id
-     * @return bool|null
+     * @return mixed
      * @throws UnauthorizedException
      */
-    public function restore(int $id): ?bool
+    public function restore(int $id): mixed
     {
-        if (!true) return null;
-
-        $employeeFunctionsService = $this->getById($id);
-        return $employeeFunctionsService->restore();
+        if (!$this->verifyAdmin()) throw new UnauthorizedException();
+        return $this->restoreData($id);
     }
 }
 
@@ -355,6 +352,137 @@ class EmployeeController extends Controller
     }
 }
 
+```
+
+## New
+<pre>CrudTrai.php added</pre>
+
+```php
+<?php
+
+/**
+ * From OneShot v3
+ * @link https://github.com/tricioandrade/oneshot
+ */
+
+namespace App\Traits\Essentials\Database;
+
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+
+trait CrudTrait
+{
+    private array | string $relations;
+    private Model | Builder $model;
+
+    /**
+     * Get all data
+     *
+     * @return mixed
+     */
+    private function getAllData(): mixed
+    {
+        return $this->model::withTrashed()->with($this->relations)->get();
+    }
+
+    /**
+     * Get data by Id
+     *
+     * @param int $id
+     * @return mixed
+     */
+    private function getByIdentity(  int $id): mixed
+    {
+        return $this->model::withTrashed()->with($this->relations)->findOrFail($id);
+    }
+
+    /**
+     * Get data by slug
+     *
+     * @param string $slug
+     * @return mixed
+     */
+    private function getBySlugInfo(string $slug): mixed
+    {
+        return $this->model::withTrashed()->with($this->relations)->where('slug', $slug)->get();
+    }
+
+    /**
+     * Get data by anonymous row
+     *
+     * @param string $anonymousRow
+     * @param $value
+     * @return mixed
+     */
+    private function getByAnonymousInfo(string $anonymousRow, $value): mixed
+    {
+        return $this->model::withTrashed()->with($this->relations)->where($anonymousRow, $value)->get();
+    }
+
+    /**
+     * Create data
+     *
+     * @param array $attributes
+     * @return mixed
+     */
+    private function createData(array $attributes): mixed
+    {
+        $create = $this->model::create($attributes);
+
+        return $create->load($this->relations);
+    }
+
+    /**
+     * Update data
+     *
+     * @param int $id
+     * @param array $attributes
+     * @return mixed
+     */
+    private function updateData(array $attributes, int $id): mixed
+    {
+        $update = $this->getByIdentity($id);
+        $update->update($attributes);
+
+        return $update->load($this->relations);
+    }
+
+    /**
+     * Delete data | put on trash
+     *
+     * @param int $id
+     * @return mixed
+     */
+    private function deleteData(int $id): mixed
+    {
+        $target = $this->getByIdentity($id);
+        return $target->delete($id);
+    }
+
+    /**
+     * Delete data permanently
+     *
+     * @param int $id
+     * @return mixed
+     */
+    private function forceDeleteData(int $id): mixed
+    {
+        $target = $this->getByIdentity($id);
+        return $target->forceDelete($id);
+    }
+
+    /**
+     * Restore data from database
+     *
+     * @param int $id
+     * @return mixed
+     */
+    private function restoreData(int $id): mixed
+    {
+        $target = $this->getByIdentity($id);
+        return $target->restore($id);
+    }
+}
 ```
 
 <h2 align="center">Special thanks to</h2> <hr>
