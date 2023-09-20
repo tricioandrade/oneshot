@@ -111,12 +111,8 @@ class MakeServiceCommand extends Command
         File::put($filePath, $serviceContent);
 
         $this->makeCrudTrait($DummyModelPath, $DummyModelClass);
-
-        Artisan::call('make:exception', ['name' => 'Auth/UnauthorizedException']);
-
         $this->info("Service ". $serviceName ." created successfully.");
     }
-
 
     private function makeCrudTrait($dummyModelPath, $dummyModelClass)
     {
@@ -130,13 +126,10 @@ class MakeServiceCommand extends Command
         ], [ $dummyModelClass, $dummyModelPath ], $crudTemplateStub);
 
         if (!is_file($crudTraitFileName)){
-
             if (!File::isDirectory($crudTraitFilePath)) File::makeDirectory($crudTraitFilePath);
-
             File::put($crudTraitFileName, $template);
 
             $this->info("Trait 'CrudTrait' created successfully.");
-
         }
     }
 }
