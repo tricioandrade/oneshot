@@ -24,7 +24,7 @@ class MakeTraitCommand extends Command
     /**
      * Execute the Console command.
      */
-    public function handle()
+    public function handle(): void
     {
         $traitName   = $this->argument('name');
         $traitPath   = app_path().'\\Traits';

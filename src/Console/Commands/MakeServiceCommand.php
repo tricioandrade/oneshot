@@ -25,7 +25,7 @@ class MakeServiceCommand extends Command
     /**
      * Execute the Console command.
      */
-    public function handle()
+    public function handle(): void
     {
         $argument               = $this->argument('name');
         $serviceName            = $argument;

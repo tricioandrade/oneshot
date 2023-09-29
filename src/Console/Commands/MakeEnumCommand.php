@@ -24,7 +24,7 @@ class MakeEnumCommand extends Command
     /**
      * Execute the Console command.
      */
-    public function handle()
+    public function handle(): void
     {
         $enumName   = $this->argument('name');
         $enumPath   = app_path().'\\Enums';

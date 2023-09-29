@@ -25,7 +25,7 @@ class MakeApiResourcesCommand extends Command
     /**
      * Execute the Console command.
      */
-    public function handle()
+    public function handle(): void
     {
         $controllerName         = $this->argument('name');
 
