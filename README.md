@@ -5,7 +5,6 @@ _Laravel_ artisan extra commands
 
 <p> "OneShot" is a development package in Laravel projects, particularly for APIs. It is a <i>resource</i> generator for items such as controllers, resources, requests, models, migrations, traits, and enums (PHP 8.1). </p>
 
-
 ## Installation
 <p>Open your terminal and run:</p>
 
