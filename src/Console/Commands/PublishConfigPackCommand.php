@@ -23,7 +23,7 @@ class PublishConfigPackCommand extends Command
     /**
      * Execute the console command.
      */
-    public function handle(): void
+    public function handle()
     {
         $this->info('Publishing <fg=green>oneshot</> package...');
 

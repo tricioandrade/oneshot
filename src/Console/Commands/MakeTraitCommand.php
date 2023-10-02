@@ -4,9 +4,11 @@ namespace OneShot\Builder\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
+use OneShot\Builder\Traits\EssentialsTrait;
 
 class MakeTraitCommand extends Command
 {
+    use EssentialsTrait;
     /**
      * The name and signature of the Console command.
      *
@@ -24,7 +26,7 @@ class MakeTraitCommand extends Command
     /**
      * Execute the Console command.
      */
-    public function handle(): void
+    public function handle()
     {
         $traitName   = $this->argument('name');
         $traitPath   = app_path().'\\Traits';
@@ -33,27 +35,20 @@ class MakeTraitCommand extends Command
 
         if (str_contains($traitName, '/')) {
             $array      = explode('/', $traitName);
-            $traitName   = end($array);
-
-            if (!preg_match('/Trait$/', $traitName)){
-                $traitName = end($array).'Trait';
-            }
+            $traitName  = end($array);
+            $traitName  = $this->addFileNameSuffix(end($array), 'Trait');
 
             array_pop($array);
             $traitPath = app_path().'\\Traits\\'.implode('/',$array);
-            $namespace   = 'App\\Traits\\'. implode('\\', $array);
-
-
+            $namespace = 'App\\Traits\\'. implode('\\', $array);
         }
 
-        if (!File::exists($traitPath)) {
-            File::makeDirectory($traitPath, 0755, true);
-        }
+        $this->createDir($traitPath);
 
-        $traitStub = str_replace([ 'DummyTrait','DummyNamespace'], [$traitName, $namespace], $traitStub);
-        $filePath = $traitPath. '\\' . $traitName . '.php';
+        $traitStub  = $this->replaceContent([ 'DummyTrait','DummyNamespace'], [$traitName, $namespace], $traitStub);
+        $filePath   = $traitPath. '\\' . $traitName . '.php';
 
-        File::put($filePath, $traitStub);
+        $this->storeContent($filePath, $traitStub);
         $this->info("Trait ${traitName} created successfully.");
     }
 }
