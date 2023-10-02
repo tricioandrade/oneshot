@@ -5,15 +5,17 @@ namespace OneShot\Builder;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\ServiceProvider;
-use OneShot\Builder\Enum\Templates\StubsFilesEnum;
+use OneShot\Builder\Enum\Templates\StubsFilesNameEnum;
+use OneShot\Builder\Traits\EssentialsTrait;
 
 class OneShotServiceProvider extends ServiceProvider
 {
+    use EssentialsTrait;
 
     /**
      * Classes registering
      */
-    public function register()
+    public function register(): void
     {
         $this->commands([
             \OneShot\Builder\Console\Commands\MakeApiResourcesCommand::class,
@@ -22,30 +24,33 @@ class OneShotServiceProvider extends ServiceProvider
             \OneShot\Builder\Console\Commands\MakeTraitCommand::class,
             \OneShot\Builder\Console\Commands\PublishConfigPackCommand::class
         ]);
-
     }
 
     /**
-     * Copy default Templates to laravel .\stubs dir.
+     * boot package
      */
-    public function boot()
+    public function boot(): void
     {
-        Artisan::call('oneshot:publish');
         $this->copyDefaultTemplates();
     }
 
-    public function copyDefaultTemplates()
+    /**
+     * Copy files Templates to stubs folder
+     * @return void
+     */
+    public function copyDefaultTemplates(): void
     {
-        $resourcePath = base_path() . '\stubs' ;
-        $defaultStubsPath = __DIR__ . '\\Templates\\Stubs\\';
+        $resourcePath       = base_path() . '\stubs' ;
+        $defaultStubsPath   = __DIR__ . '\\Templates\\Stubs\\';
 
-        if (!File::exists($resourcePath)) File::makeDirectory($resourcePath);
+        $this->createDir($resourcePath);
 
-        foreach (StubsFilesEnum::values() as $file){
-            if (!File::exists($resourcePath .'\\'. $file)):
-                $content = File::get($defaultStubsPath .'\\'. $file);
-                File::put($resourcePath .'\\'. $file, $content);
-            endif;
+        foreach (StubsFilesNameEnum::values() as $fileName){
+            $fileNamePath       = $resourcePath .'\\'. $fileName;
+            $contentFileName    = $defaultStubsPath .'\\'. $fileName;
+            $content            = file_get_contents($contentFileName);
+
+            $this->storeContent($fileNamePath, $content);
         }
     }
 }

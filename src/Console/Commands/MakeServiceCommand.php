@@ -5,9 +5,11 @@ namespace OneShot\Builder\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
+use OneShot\Builder\Traits\EssentialsTrait;
 
 class MakeServiceCommand extends Command
 {
+    use EssentialsTrait;
     /**
      * The name and signature of the Console command.
      *
@@ -58,7 +60,7 @@ class MakeServiceCommand extends Command
          * Verify if service name argument has Controller suffix like MyLovelyController
          * if false append it.
          */
-        if (!preg_match('/Service$/', $serviceName)) $serviceName = $serviceName.'Service';
+        $serviceName = $this->addFileNameSuffix($serviceName, 'Service');
 
         /**
          * Clear service name if it has / (slash)
@@ -85,7 +87,7 @@ class MakeServiceCommand extends Command
             $baseModelNamespace  = $baseModelNamespace. '\\' .  implode('\\', $argumentArrayResult);
         }
 
-        if (!File::exists($baseFilesPath)) File::makeDirectory($baseFilesPath, 0755, true);
+        $this->createDir($baseFilesPath);
 
         $DummyNamespace         = $serviceNamespace;
         $DummyModelPath         = $baseModelNamespace . '\\' . $modelClassName;
@@ -93,27 +95,29 @@ class MakeServiceCommand extends Command
         $DummyModelClass        = $modelClassName;
         $DummyInScopeVariable   = lcfirst($serviceName);
 
-        $serviceContent = str_replace([
+        $target = [
             'DummyNamespace',
             'DummyModelPath',
             'DummyClass',
             'DummyModelClass',
             'DummyInScopeVariable'
-        ],  [
+        ];
+
+        $newContent =  [
             $DummyNamespace,
             $DummyModelPath,
             $DummyClass,
             $DummyModelClass,
             $DummyInScopeVariable
-        ], $serviceTemplateStub);
+        ];
 
-        $filePath = $baseFilesPath .'\\'. $DummyClass . '.php';
-        File::put($filePath, $serviceContent);
+        $serviceContent = $this->replaceContent($target, $newContent, $serviceTemplateStub);
+        $filePath       = $baseFilesPath .'\\'. $DummyClass . '.php';
 
+        $this->storeContent($filePath, $serviceContent);
         $this->makeCrudTrait($DummyModelPath, $DummyModelClass);
 
         Artisan::call('make:exception', ['name' => 'Auth/UnauthorizedException']);
-
         $this->info("Service ". $serviceName ." created successfully.");
     }
 
@@ -124,19 +128,12 @@ class MakeServiceCommand extends Command
         $crudTraitFileName = app_path()."\Traits\Essentials\Database\CrudTrait.php";
         $crudTraitFilePath = app_path()."\Traits\Essentials\Database";
 
-        $template = str_replace([
-            'DummyModelClass',
-            'DummyModelPath'
-        ], [ $dummyModelClass, $dummyModelPath ], $crudTemplateStub);
+        $template = $this->replaceContent(['DummyModelClass', 'DummyModelPath'], [ $dummyModelClass, $dummyModelPath ], $crudTemplateStub);
 
         if (!is_file($crudTraitFileName)){
-
-            if (!File::isDirectory($crudTraitFilePath)) File::makeDirectory($crudTraitFilePath);
-
-            File::put($crudTraitFileName, $template);
-
+            $this->createDir($crudTraitFilePath);
+            $this->storeContent($crudTraitFileName, $template);
             $this->info("Trait 'CrudTrait' created successfully.");
-
         }
     }
 }

@@ -4,9 +4,12 @@ namespace OneShot\Builder\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
+use OneShot\Builder\Traits\EssentialsTrait;
 
 class MakeEnumCommand extends Command
 {
+    use EssentialsTrait;
+
     /**
      * The name and signature of the Console command.
      *
@@ -34,26 +37,18 @@ class MakeEnumCommand extends Command
         if (str_contains($enumName, '/')) {
             $array      = explode('/', $enumName);
             $enumName   = end($array);
-
-            if (!preg_match('/Enum$/', $enumName)){
-                $enumName = end($array).'Enum';
-            }
+            $enumName   = $this->addFileNameSuffix(end($array).'Enum');
 
             array_pop($array);
             $enumPath = app_path().'\\Enums\\'.implode('/',$array);
             $namespace   = 'App\\Enums\\'. implode('\\', $array);
-            
         }
 
-        if (!File::exists($enumPath)) {
-            File::makeDirectory($enumPath, 0755, true);
-        }
+        $this->createDir($enumPath);
 
-        $enumStub = str_replace([ 'DummyClass','DummyNamespace'], [$enumName, $namespace], $enumStub);
-        $filePath = $enumPath. '\\' . $enumName . '.php';
+        $enumStub = $this->replaceContent([ 'DummyClass','DummyNamespace'], [$enumName, $namespace], $enumStub);
 
-        File::put($filePath, $enumStub);
-
+        $this->storeContent($enumPath. '\\' . $enumName . '.php', $enumStub);
         $this->info("Enum ${enumName} created successfully.");
     }
 }
