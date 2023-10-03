@@ -37,7 +37,7 @@ class MakeEnumCommand extends Command
         if (str_contains($enumName, '/')) {
             $array      = explode('/', $enumName);
             $enumName   = end($array);
-            $enumName   = $this->addFileNameSuffix(end($array).'Enum');
+            $enumName   = $this->addFileNameSuffix(end($array), 'Enum');
 
             array_pop($array);
             $enumPath = app_path().'\\Enums\\'.implode('/',$array);

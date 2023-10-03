@@ -16,7 +16,7 @@ trait EssentialsTrait
     public function addFileNameSuffix(string $fileName, string $suffix): string
     {
         if (!preg_match( "/" . $suffix . "$/", $fileName))
-            $fileName += $suffix;
+            $fileName = $fileName.$suffix;
 
         return $fileName;
     }
