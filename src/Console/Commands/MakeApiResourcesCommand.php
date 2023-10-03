@@ -53,7 +53,7 @@ class MakeApiResourcesCommand extends Command
          * if false append it.
          */
 
-        $this->addFileNameSuffix($controllerName, 'Controller');
+        $controllerName = $this->addFileNameSuffix($controllerName, 'Controller');
 
         /**
          * Clear controller name if it has /
