@@ -119,44 +119,32 @@ class MakeApiResourcesCommand extends Command
         ], $controllerTemplateStub);
 
         $filePath = $controllerPath. '\\' . $controllerName . '.php';
-        File::put($filePath, $controllerTemplateStub);
 
-        /**
-         * Execute and print artisan tasks message.
-         */
+        $this->storeContent($filePath, $controllerTemplateStub);
+        $this->newLine();
 
-        $this->newLine(); // break line.
-
-        /**
-         * Create new resource
-         */
+        /** Create new resource **/
         Artisan::call('make:resource', ['name' => $baseFilesPath .'\\' .$controllerNameWithoutSuffix . 'Resource']);
         $this->line("\t<fg=white;bg=green>INFO</>\t <fg=white>API resource ". $controllerNameWithoutSuffix. "Resource created successfully.</>");
         $this->newLine();
 
-        /**
-         * Create new request
-         */
+        /** Create new request **/
         Artisan::call('make:request', [ 'name' => $baseFilesPath .'\\' .$controllerNameWithoutSuffix . 'Request']);
-        $this->line("\t<fg=white;bg=green>INFO</>\t <fg=white>API request"  . $controllerNameWithoutSuffix . "Request created successfully.</>");
+        $this->line("\t<fg=white;bg=green>INFO</>\t <fg=white>API request "  . $controllerNameWithoutSuffix . " Request created successfully.</>");
         $this->newLine();
 
-        /**
-         * Create Model and migration
-         */
+        /** Create Model and migration **/
         Artisan::call('make:model', ['name' => $baseFilesPath .'\\' .$controllerNameWithoutSuffix . 'Model', '--migration'   => true]);
 
-        $this->line("\t<fg=white;bg=green>INFO</>\t <fg=white>API model"  . $controllerNameWithoutSuffix . "Model created successfully.</>");
+        $this->line("\t<fg=white;bg=green>INFO</>\t <fg=white>API model "  . $controllerNameWithoutSuffix . " Model created successfully.</>");
         $this->newLine();
 
-        /**
-         * Custom make:service command
-         */
+        /** Custom make:service command **/
         Artisan::call('make:service', ['name' => $baseFilesPath .'/' .$controllerNameWithoutSuffix . 'Service']);
-        $this->line("\t<fg=white;bg=green>INFO</>\t <fg=white>API service"  . $controllerNameWithoutSuffix . "Service created successfully.</>");
+        $this->line("\t<fg=white;bg=green>INFO</>\t <fg=white>API service "  . $controllerNameWithoutSuffix . " Service created successfully.</>");
         $this->newLine();
 
-        $this->info("\t<fg=white;bg=green>INFO</>\t <fg=white>API controller"  . $controllerNameWithoutSuffix . "Controller created successfully.</>");
+        $this->info("\t<fg=white;bg=green>INFO</>\t <fg=white>API controller "  . $controllerNameWithoutSuffix . " Controller created successfully.</>");
         $this->newLine();
     }
 }

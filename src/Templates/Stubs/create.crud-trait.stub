@@ -28,7 +28,7 @@ trait CrudTrait
      */
     private function getByIdentity(  int $id): mixed
     {
-        return $this->model::withTrashed()->with($this->relations)->findOrFail($id)->get();
+        return $this->model::withTrashed()->with($this->relations)->find($id);
     }
 
     /**
@@ -39,7 +39,7 @@ trait CrudTrait
      */
     private function getBySlugInfo(string $slug): mixed
     {
-        return $this->model::withTrashed()->with($this->relations)->where('slug', $slug)->get();
+        return $this->model::withTrashed()->with($this->relations)->where('slug', $slug)->first();
     }
 
     /**
