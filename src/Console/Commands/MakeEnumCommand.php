@@ -4,6 +4,7 @@ namespace OneShot\Builder\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
+use OneShot\Builder\Enum\Templates\StubsFilesNameEnum;
 use OneShot\Builder\Traits\EssentialsTrait;
 
 class MakeEnumCommand extends Command
@@ -27,16 +28,15 @@ class MakeEnumCommand extends Command
     /**
      * Execute the Console command.
      */
-    public function handle()
+    public function handle(): void
     {
         $enumName   = $this->argument('name');
         $enumPath   = app_path().'\\Enums';
         $namespace  = 'App\\Enums';
-        $enumStub   = File::get(base_path('stubs/create.enum.stub'));
+        $enumStub   = File::get(base_path('stubs/' . StubsFilesNameEnum::ENUM->value));
 
         if (str_contains($enumName, '/')) {
             $array      = explode('/', $enumName);
-            $enumName   = end($array);
             $enumName   = $this->addFileNameSuffix(end($array), 'Enum');
 
             array_pop($array);
@@ -49,6 +49,6 @@ class MakeEnumCommand extends Command
         $enumStub = $this->replaceContent([ 'DummyClass','DummyNamespace'], [$enumName, $namespace], $enumStub);
 
         $this->storeContent($enumPath. '\\' . $enumName . '.php', $enumStub);
-        $this->info("Enum ${enumName} created successfully.");
+        $this->info("Enum " . $enumName . " created successfully.");
     }
 }

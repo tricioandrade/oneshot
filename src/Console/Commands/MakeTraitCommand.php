@@ -4,6 +4,7 @@ namespace OneShot\Builder\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
+use OneShot\Builder\Enum\Templates\StubsFilesNameEnum;
 use OneShot\Builder\Traits\EssentialsTrait;
 
 class MakeTraitCommand extends Command
@@ -26,16 +27,15 @@ class MakeTraitCommand extends Command
     /**
      * Execute the Console command.
      */
-    public function handle()
+    public function handle(): void
     {
         $traitName   = $this->argument('name');
         $traitPath   = app_path().'\\Traits';
         $namespace  = 'App\\Traits';
-        $traitStub   = File::get(base_path('stubs/create.trait.stub'));
+        $traitStub   = File::get(base_path('stubs/'. StubsFilesNameEnum::TRAITS->value));
 
         if (str_contains($traitName, '/')) {
             $array      = explode('/', $traitName);
-            $traitName  = end($array);
             $traitName  = $this->addFileNameSuffix(end($array), 'Trait');
 
             array_pop($array);
@@ -46,9 +46,8 @@ class MakeTraitCommand extends Command
         $this->createDir($traitPath);
 
         $traitStub  = $this->replaceContent([ 'DummyTrait','DummyNamespace'], [$traitName, $namespace], $traitStub);
-        $filePath   = $traitPath. '\\' . $traitName . '.php';
 
-        $this->storeContent($filePath, $traitStub);
-        $this->info("Trait ${traitName} created successfully.");
+        $this->storeContent($traitPath. '\\' . $traitName . '.php', $traitStub);
+        $this->info("Trait ". $traitName ." created successfully.");
     }
 }

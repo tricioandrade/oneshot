@@ -5,6 +5,7 @@ namespace OneShot\Builder\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
+use OneShot\Builder\Enum\Templates\StubsFilesNameEnum;
 use OneShot\Builder\Traits\EssentialsTrait;
 
 class MakeApiResourcesCommand extends Command
@@ -30,18 +31,17 @@ class MakeApiResourcesCommand extends Command
     public function handle()
     {
         $controllerName         = $this->argument('name');
-
         $controllerNamespace    = 'App\\Http\\Controllers';
         $controllerPath         = app_path().'\\'.'Http\\Controllers';
-        $controllerTemplateStub = File::get(base_path('stubs/create.api-resources.stub'));
+        $controllerTemplateStub = File::get(base_path('stubs/' . StubsFilesNameEnum::API_RESOURCES->value));
 
         /**
          * Remove the Controller Suffix if exists,
          * otherwise keeps the original name
          * Ex: MyLovelyController result in  MyLovely
          */
-        $controllerNameWithoutSuffix = explode('/', str_replace('Controller', "", $controllerName));
-        $controllerNameWithoutSuffix = end($controllerNameWithoutSuffix);
+        $toArray = explode('/', $this->replaceContent('Controller', "", $controllerName));
+        $controllerNameWithoutSuffix = end($toArray);
 
         /**
          * Get controller path from given name.
@@ -79,18 +79,19 @@ class MakeApiResourcesCommand extends Command
 
         $this->createDir($controllerPath);
 
-        $DummyInScopeVariable       = lcfirst($controllerNameWithoutSuffix);
-        $DummyInstanceServiceClass  = lcfirst($controllerNameWithoutSuffix) . 'Service';
-        $DummyInstanceRequestClass  = lcfirst($controllerNameWithoutSuffix) . 'Request';
+        $c = lcfirst($controllerNameWithoutSuffix);
+        $DummyInScopeVariable       = $c;
+        $DummyInstanceServiceClass  = $c . 'Service';
+        $DummyInstanceRequestClass  = $c . 'Request';
 
         $DummyResourceClass         = $controllerNameWithoutSuffix . 'Resource';
         $DummyServiceClass          = $controllerNameWithoutSuffix . 'Service';
         $DummyRequestClass          = $controllerNameWithoutSuffix . 'Request';
 
-
-        $DummyServiceClassPath      = 'App\\Services\\'. str_replace("/","\\",$baseFilesPath) . '\\'  . $controllerNameWithoutSuffix . 'Service';
-        $DummyRequestClassPath      = 'App\\Http\\Requests\\'. str_replace("/","\\",$baseFilesPath) . '\\'  .$controllerNameWithoutSuffix . 'Request' ;
-        $DummyResourceClassPath     = 'App\\Http\\Resources\\'. str_replace("/","\\",$baseFilesPath) . '\\'  .$controllerNameWithoutSuffix .'Resource';
+        $r = $this->replaceContent("/","\\",$baseFilesPath) . '\\' . $controllerNameWithoutSuffix;
+        $DummyServiceClassPath      = 'App\\Services\\'. $r . 'Service';
+        $DummyRequestClassPath      = 'App\\Http\\Requests\\'. $r . 'Request' ;
+        $DummyResourceClassPath     = 'App\\Http\\Resources\\'. $r .'Resource';
 
         $controllerTemplateStub = $this->replaceContent([
             'DummyClass',
@@ -121,30 +122,87 @@ class MakeApiResourcesCommand extends Command
         $filePath = $controllerPath. '\\' . $controllerName . '.php';
 
         $this->storeContent($filePath, $controllerTemplateStub);
+
+        $controllerMessage = "\t<fg=white;bg=green>INFO</>\t <fg=white>API controller "  . $controllerNameWithoutSuffix . " Controller created successfully.</>";
+        $this->info($controllerMessage);
         $this->newLine();
 
-        /** Create new resource **/
-        Artisan::call('make:resource', ['name' => $baseFilesPath .'\\' .$controllerNameWithoutSuffix . 'Resource']);
-        $this->line("\t<fg=white;bg=green>INFO</>\t <fg=white>API resource ". $controllerNameWithoutSuffix. "Resource created successfully.</>");
+        $resourcesFilesBaseName = $baseFilesPath .'\\' .$controllerNameWithoutSuffix;
+
+        $resourceName = $resourcesFilesBaseName . 'Resource';
+        $requestName  = $resourcesFilesBaseName . 'Request';
+        $modelName    = $resourcesFilesBaseName . 'Model';
+        $serviceName  = $baseFilesPath .'/' .$controllerNameWithoutSuffix . 'Service';
+
+        $this->createService($serviceName, $controllerNameWithoutSuffix);
+        $this->createRequest($requestName, $controllerNameWithoutSuffix);
+        $this->createResource($resourceName, $controllerNameWithoutSuffix);
+        $this->createModelAndMigration($modelName, $controllerNameWithoutSuffix);
+    }
+
+    /**
+     * Create Resource command
+     *
+     * @param $resourceName
+     * @param $n
+     * @return void
+     */
+    public function createResource($resourceName, $n): void
+    {
+        $m = "\t<fg=white;bg=green>INFO</>\t <fg=white>API resource ". $n. "Resource created successfully.</>";
+
+        Artisan::call('make:resource', ['name' => $resourceName]);
+
+        $this->line($m);
         $this->newLine();
+    }
 
-        /** Create new request **/
-        Artisan::call('make:request', [ 'name' => $baseFilesPath .'\\' .$controllerNameWithoutSuffix . 'Request']);
-        $this->line("\t<fg=white;bg=green>INFO</>\t <fg=white>API request "  . $controllerNameWithoutSuffix . " Request created successfully.</>");
+    /**
+     * Create Request command
+     *
+     * @param $requestName
+     * @param $n
+     */
+    public function createRequest($requestName, $n): void
+    {
+        $m = "\t<fg=white;bg=green>INFO</>\t <fg=white>API request "  . $n . " Request created successfully.</>";
+
+        Artisan::call('make:request', [ 'name' => $requestName]);
+
+        $this->line($m);
         $this->newLine();
+    }
 
-        /** Create Model and migration **/
-        Artisan::call('make:model', ['name' => $baseFilesPath .'\\' .$controllerNameWithoutSuffix . 'Model', '--migration'   => true]);
+    /**
+     * Create Model and Migration command
+     *
+     * @param $modelName
+     * @param $n
+     * @return void
+     */
+    public function createModelAndMigration($modelName, $n): void
+    {
+        $m = "\t<fg=white;bg=green>INFO</>\t <fg=white>API model "  . $n . " Model created successfully.</>";
 
-        $this->line("\t<fg=white;bg=green>INFO</>\t <fg=white>API model "  . $controllerNameWithoutSuffix . " Model created successfully.</>");
+        Artisan::call('make:model', ['name' => $modelName, '--migration'   => true]);
+
+        $this->line($m);
         $this->newLine();
+    }
 
-        /** Custom make:service command **/
-        Artisan::call('make:service', ['name' => $baseFilesPath .'/' .$controllerNameWithoutSuffix . 'Service']);
-        $this->line("\t<fg=white;bg=green>INFO</>\t <fg=white>API service "  . $controllerNameWithoutSuffix . " Service created successfully.</>");
-        $this->newLine();
+    /**
+     * Create Service command
+     *
+     * @param $serviceName
+     * @return void
+     */
+    public function createService($serviceName, $n): void
+    {
+        $m = "\t<fg=white;bg=green>INFO</>\t <fg=white>API service "  . $n . " Service created successfully.</>";
 
-        $this->info("\t<fg=white;bg=green>INFO</>\t <fg=white>API controller "  . $controllerNameWithoutSuffix . " Controller created successfully.</>");
+        Artisan::call('make:service', ['name' => $serviceName]);
+
+        $this->line($m);
         $this->newLine();
     }
 }

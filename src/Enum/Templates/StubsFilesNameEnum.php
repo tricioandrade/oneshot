@@ -4,7 +4,7 @@ namespace OneShot\Builder\Enum\Templates;
 
 enum StubsFilesNameEnum: string
 {
-    case API_CONTROLLER = 'create.api-resources.stub';
+    case API_RESOURCES = 'create.api-resources.stub';
     case CRUD_TRAIT     = 'create.crud-trait.stub';
     case SERVICE        = 'create.service.stub';
     case TRAITS         = 'create.trait.stub';

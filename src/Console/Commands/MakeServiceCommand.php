@@ -5,6 +5,7 @@ namespace OneShot\Builder\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
+use OneShot\Builder\Enum\Templates\StubsFilesNameEnum;
 use OneShot\Builder\Traits\EssentialsTrait;
 
 class MakeServiceCommand extends Command
@@ -34,7 +35,7 @@ class MakeServiceCommand extends Command
         $servicePath            = app_path().'\\Services';
         $serviceNamespace       = 'App\\Services';
         $baseModelNamespace     = 'App\\Models';
-        $serviceTemplateStub    = File::get(base_path('stubs/create.service.stub'));
+        $serviceTemplateStub    = File::get(base_path('stubs/' . StubsFilesNameEnum::SERVICE->value));
 
         /**
          * Remove the Controller Suffix if exists,
@@ -129,7 +130,7 @@ class MakeServiceCommand extends Command
      */
     private function makeCrudTrait($dummyModelPath, $dummyModelClass): void
     {
-        $crudTemplateStub  = File::get(base_path('stubs/create.crud-trait.stub'));
+        $crudTemplateStub  = File::get(base_path('stubs/' . StubsFilesNameEnum::CRUD_TRAIT->value));
         $crudTraitFileName = app_path()."\Traits\Essentials\Database\CrudTrait.php";
         $crudTraitFilePath = app_path()."\Traits\Essentials\Database";
 
@@ -143,6 +144,7 @@ class MakeServiceCommand extends Command
 
             Artisan::call('make:exception', ['name' => 'Auth/UnauthorizedException']);
             Artisan::call('make:exception', ['name' => 'DatabaseException']);
+            Artisan::call('make:trait', ['name' => 'Auth/VerifyUser']);
         }
     }
 }
