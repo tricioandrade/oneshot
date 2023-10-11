@@ -2,6 +2,7 @@
 
 namespace App\Traits\Essentials\Database;
 
+use App\Exceptions\DatabaseException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -11,24 +12,28 @@ trait CrudTrait
     private Model | Builder $model;
 
     /**
-     * Get all data
+     * Get all data from database
      *
      * @return mixed
+     * @throws DatabaseException
      */
     private function getAllData(): mixed
     {
-        return $this->model::withTrashed()->with($this->relations)->get();
+        $resource = $this->model::withTrashed()->with($this->relations)->get();
+        return $this->isResource($resource);
     }
 
     /**
-     * Get data by Id
+     * Get data by ID
      *
      * @param int $id
      * @return mixed
+     * @throws DatabaseException
      */
-    private function getByIdentity(  int $id): mixed
+    private function getByIdentity(int $id): mixed
     {
-        return $this->model::withTrashed()->with($this->relations)->find($id);
+        $resource = $this->model::withTrashed()->with($this->relations)->find($id);
+        return $this->isResource($resource);
     }
 
     /**
@@ -36,10 +41,12 @@ trait CrudTrait
      *
      * @param string $slug
      * @return mixed
+     * @throws DatabaseException
      */
     private function getBySlugInfo(string $slug): mixed
     {
-        return $this->model::withTrashed()->with($this->relations)->where('slug', $slug)->first();
+        $resource = $this->model::withTrashed()->with($this->relations)->where('slug', $slug)->get();
+        return $this->isResource($resource);
     }
 
     /**
@@ -48,10 +55,12 @@ trait CrudTrait
      * @param string $anonymousRow
      * @param $value
      * @return mixed
+     * @throws DatabaseException
      */
     private function getByAnonymousInfo(string $anonymousRow, $value): mixed
     {
-        return $this->model::withTrashed()->with($this->relations)->where($anonymousRow, $value)->get();
+        $resource = $this->model::withTrashed()->with($this->relations)->where($anonymousRow, $value)->get();
+        return $this->isResource($resource);
     }
 
     /**
@@ -59,12 +68,12 @@ trait CrudTrait
      *
      * @param array $attributes
      * @return mixed
+     * @throws DatabaseException
      */
     private function createData(array $attributes): mixed
     {
         $create = $this->model::create($attributes);
-
-        return $create->load($this->relations);
+        return $this->isResource($create->load($this->relations));
     }
 
     /**
@@ -73,13 +82,14 @@ trait CrudTrait
      * @param int $id
      * @param array $attributes
      * @return mixed
+     * @throws DatabaseException
      */
     private function updateData(array $attributes, int $id): mixed
     {
         $update = $this->getByIdentity($id);
         $update->update($attributes);
 
-        return $update->load($this->relations);
+        return $this->isResource($update->load($this->relations));
     }
 
     /**
@@ -87,11 +97,12 @@ trait CrudTrait
      *
      * @param int $id
      * @return mixed
+     * @throws DatabaseException
      */
     private function deleteData(int $id): mixed
     {
         $target = $this->getByIdentity($id);
-        return $target->delete($id);
+        return $this->isResource($target->delete($id));
     }
 
     /**
@@ -99,11 +110,12 @@ trait CrudTrait
      *
      * @param int $id
      * @return mixed
+     * @throws DatabaseException
      */
     private function forceDeleteData(int $id): mixed
     {
         $target = $this->getByIdentity($id);
-        return $target->forceDelete($id);
+        return $this->isResource($target->forceDelete($id));
     }
 
     /**
@@ -111,10 +123,23 @@ trait CrudTrait
      *
      * @param int $id
      * @return mixed
+     * @throws DatabaseException
      */
     private function restoreData(int $id): mixed
     {
         $target = $this->getByIdentity($id);
-        return $target->restore($id);
+        return $this->isResource($target->restore($id));
+    }
+
+    /**
+     * Throws database exception if resource not found
+     *
+     * @param mixed $resource
+     * @return mixed
+     * @throws DatabaseException
+     */
+    private function isResource(mixed $resource): mixed
+    {
+        return $resource ?? throw new \App\Exceptions\DatabaseException('Resource not found');
     }
 }

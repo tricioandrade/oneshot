@@ -82,7 +82,6 @@ class MakeServiceCommand extends Command
             array_pop($argumentArrayResult);
 
             $baseFilesPath       = $servicePath .'\\'. implode('\\', $argumentArrayResult);
-            $servicePath         = app_path().'\\Services\\'. $baseFilesPath;
             $serviceNamespace    = $serviceNamespace .'\\'  . implode('\\', $argumentArrayResult);
             $baseModelNamespace  = $baseModelNamespace. '\\' .  implode('\\', $argumentArrayResult);
         }
@@ -117,12 +116,18 @@ class MakeServiceCommand extends Command
         $this->storeContent($filePath, $serviceContent);
         $this->makeCrudTrait($DummyModelPath, $DummyModelClass);
 
-        Artisan::call('make:exception', ['name' => 'Auth/UnauthorizedException']);
         $this->info("Service ". $serviceName ." created successfully.");
     }
 
 
-    private function makeCrudTrait($dummyModelPath, $dummyModelClass)
+    /**
+     * Create CrudTrait repository file
+     *
+     * @param $dummyModelPath
+     * @param $dummyModelClass
+     * @return void
+     */
+    private function makeCrudTrait($dummyModelPath, $dummyModelClass): void
     {
         $crudTemplateStub  = File::get(base_path('stubs/create.crud-trait.stub'));
         $crudTraitFileName = app_path()."\Traits\Essentials\Database\CrudTrait.php";
@@ -131,9 +136,13 @@ class MakeServiceCommand extends Command
         $template = $this->replaceContent(['DummyModelClass', 'DummyModelPath'], [ $dummyModelClass, $dummyModelPath ], $crudTemplateStub);
 
         if (!is_file($crudTraitFileName)){
+
             $this->createDir($crudTraitFilePath);
             $this->storeContent($crudTraitFileName, $template);
             $this->info("Trait 'CrudTrait' created successfully.");
+
+            Artisan::call('make:exception', ['name' => 'Auth/UnauthorizedException']);
+            Artisan::call('make:exception', ['name' => 'DatabaseException']);
         }
     }
 }
