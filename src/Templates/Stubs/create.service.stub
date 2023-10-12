@@ -6,10 +6,11 @@ use App\Exceptions\Auth\UnauthorizedException;
 use DummyModelPath;
 use App\Traits\Essentials\Database\CrudTrait;
 use Illuminate\Database\Eloquent\Collection;
+use App\Traits\Common\Auth\VerifyUserTrait;
 
 class DummyClass
 {
-    use CrudTrait;
+    use CrudTrait, VerifyUserTrait;
 
     public function __construct()
     {
@@ -24,7 +25,7 @@ class DummyClass
      */
     public function getAll(): DummyModelClass|Collection
     {
-        // if (!auth()->user()->is_admin) throw new UnauthorizedException();
+        if (!$this->isAdmin()) throw new UnauthorizedException();
         return $this->getAllData();
     }
 
@@ -34,7 +35,7 @@ class DummyClass
      * @throws UnauthorizedException
      */
     public function create(array $attributes) {
-        // if (!auth()->user()->is_admin) throw new UnauthorizedException();
+        if (!$this->isAdmin()) throw new UnauthorizedException();
 
         return $this->createData($attributes);
     }
@@ -48,7 +49,7 @@ class DummyClass
      */
     public function getById(int $id): DummyModelClass|Collection
     {
-        // if (!auth()->user()->is_admin) throw new UnauthorizedException();
+        if (!$this->isAdmin()) throw new UnauthorizedException();
         return $this->getByIdentity($id);
     }
 
@@ -62,7 +63,7 @@ class DummyClass
      */
     public function update(array $attributes, int $id): DummyModelClass|Collection
     {
-        // if (!auth()->user()->is_admin) throw new UnauthorizedException();
+        if (!$this->isAdmin()) throw new UnauthorizedException();
         return  $this->updateData($attributes, $id);
     }
 
@@ -75,7 +76,7 @@ class DummyClass
      */
     public function delete(int $id): mixed
     {
-        // if (!auth()->user()->is_admin) throw new UnauthorizedException();
+        if (!$this->isAdmin()) throw new UnauthorizedException();
         return $this->deleteData($id);
     }
 
@@ -88,7 +89,7 @@ class DummyClass
      */
     public function forceDelete(int $id): mixed
     {
-        // if (!auth()->user()->is_admin) throw new UnauthorizedException();
+        if (!$this->isAdmin()) throw new UnauthorizedException();
         return $this->forceDeleteData($id);
     }
 
@@ -101,7 +102,7 @@ class DummyClass
      */
     public function restore(int $id): mixed
     {
-        // if (!auth()->user()->is_admin) throw new UnauthorizedException();
+        if (!$this->isAdmin()) throw new UnauthorizedException();
         return $this->restoreData($id);
     }
 }
