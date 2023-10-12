@@ -138,7 +138,17 @@ class MakeServiceCommand extends Command
         $crudTraitFileName = app_path()."\Traits\Essentials\Database\CrudTrait.php";
         $crudTraitFilePath = app_path()."\Traits\Essentials\Database";
 
-        $template = $this->replaceContent(['DummyModelClass', 'DummyModelPath'], [ $dummyModelClass, $dummyModelPath ], $crudTemplateStub);
+        $template = $this->replaceContent(
+            [
+                'DummyModelClass',
+                'DummyModelPath'
+            ],
+            [
+                $dummyModelClass,
+                $dummyModelPath
+            ],
+            $crudTemplateStub
+        );
 
         if (!is_file($crudTraitFileName)){
 
@@ -148,7 +158,7 @@ class MakeServiceCommand extends Command
 
             Artisan::call('make:exception', ['name' => 'Auth/UnauthorizedException']);
             Artisan::call('make:exception', ['name' => 'DatabaseException']);
-            Artisan::call('make:trait', ['name' => 'Auth/VerifyUser']);
+            Artisan::call('make:trait', ['name' => 'Common/Auth/VerifyUser']);
         }
     }
 }
