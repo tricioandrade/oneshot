@@ -28,7 +28,7 @@ class MakeServiceCommand extends Command
     /**
      * Execute the Console command.
      */
-    public function handle()
+    public function handle(): void
     {
         $argument               = $this->argument('name');
         $serviceName            = $argument;
@@ -46,6 +46,7 @@ class MakeServiceCommand extends Command
         $serviceNameWithoutSuffixArray  = explode('\\', $fullParamWithoutSuffix);
         $serviceNameWithoutSuffix       = end($serviceNameWithoutSuffixArray);
 
+
         /**
          * Set model class name
          */
@@ -55,13 +56,16 @@ class MakeServiceCommand extends Command
         /**
          * Get service path from given name.
          */
-        $baseFilesPath = $servicePath . $fullParamWithoutSuffix;
+        $baseFilesPath = $servicePath .'\\'. $fullParamWithoutSuffix;
 
         /**
          * Verify if service name argument has Controller suffix like MyLovelyController
          * if false append it.
          */
         $serviceName = $this->addFileNameSuffix($serviceName, 'Service');
+
+        if (!str_contains($argument, '/'))
+        $serviceNamespace = $serviceNamespace . '\\'. $serviceNameWithoutSuffix;
 
         /**
          * Clear service name if it has / (slash)
@@ -75,7 +79,7 @@ class MakeServiceCommand extends Command
          */
         if (str_contains($argument, '/')) {
             $argumentArrayResult = explode('/', $argument);
-            $serviceName         = end($argumentArrayResult);
+            $serviceName         = $this->addFileNameSuffix(end($argumentArrayResult), 'Service');
 
             $m = explode('/', $modelClassName);
             $modelClassName      = end($m);
