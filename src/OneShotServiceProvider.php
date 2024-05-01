@@ -40,14 +40,15 @@ class OneShotServiceProvider extends ServiceProvider
      */
     public function copyDefaultTemplates(): void
     {
-        $resourcePath       = base_path() . '\stubs' ;
-        $defaultStubsPath   = __DIR__ . '\\Templates\\Stubs\\';
+        $resourcePath       = base_path() . '/stubs' ;
+        $defaultStubsPath   = __DIR__ . '/Templates/Stubs/';
 
         $this->createDir($resourcePath);
 
         foreach (StubsFilesNameEnum::values() as $fileName){
-            $fileNamePath       = $resourcePath .'\\'. $fileName;
-            $contentFileName    = $defaultStubsPath .'\\'. $fileName;
+            $fileNamePath       = $resourcePath .'/'. $fileName;
+            $contentFileName    = $defaultStubsPath . $fileName;
+
             $content            = file_get_contents($contentFileName);
 
             $this->storeContent($fileNamePath, $content);

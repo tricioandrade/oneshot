@@ -31,7 +31,7 @@ trait EssentialsTrait
     {
         if (!File::exists($dir)) {
             if (!File::makeDirectory($dir, 755, true))
-                throw new \Error('Cant create dir: '. $dir);
+                throw new \Error('Cannot create dir: '. $dir);
         }
 
         return true;
